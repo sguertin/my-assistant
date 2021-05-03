@@ -39,14 +39,14 @@ if not working_dir.exists():
 def create_entry(date: datetime, entry: str):
     task_file = get_task_file_path(date)    
     with open(str(task_file), 'a+') as f:
-        f.write(f'{date.hour}:00 - {entry}\n')
+        f.write(f'{date.hour - 1}:00-{date.hour}:00 - {entry}\n')
     log.info(f'Entry logged for {date.hour}:00')
 
 def is_workday(date: datetime) -> bool:
     return date.weekday() < 5
 
 def is_workhour(date: datetime) -> bool:
-    return date.hour >= 8 and date.hour <= 17
+    return date.hour > 8 and date.hour <= 17
 
 now = datetime.now()
 log.info('Initialization is complete, starting...')
@@ -54,8 +54,8 @@ while True:
     if is_workday(now) and is_workhour(now) and now.hour != last_hour:
         last_hour = now.hour
         entry = pyautogui.prompt(
-            text='What have you been working on for the past hour?',
-            title=f'Work Tracking - Hour: {now.hour}:00',
+            text=f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?',
+            title=f'Work Tracking - {now.month}/{now.day}/{now.year}: {now.hour - 1}:00 - {now.hour}:00',
         )
         create_entry(now, entry)
     now = datetime.now()
