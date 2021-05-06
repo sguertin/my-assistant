@@ -5,13 +5,14 @@ from os import getenv, mkdir
 from pathlib import Path
 from time import sleep
 
-import pyautogui
+import PySimpleGUI as sg
 
 logging.basicConfig(
     level=logging.CRITICAL,
     format='%(name)-15s %(message)s',
     datefmt='[%Y-%m-%d %H:%M:%S]',
 )
+sg.theme('DarkGrey11') 
 
 log = logging.getLogger('TimeTracking')
 log.setLevel(logging.INFO)
@@ -53,10 +54,13 @@ log.info('Initialization is complete, starting...')
 while True:    
     if is_workday(now) and is_workhour(now) and now.hour != last_hour:
         last_hour = now.hour
-        entry = pyautogui.prompt(
-            text=f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?',
-            title=f'Work Tracking - {now.month}/{now.day}/{now.year}: {now.hour - 1}:00 - {now.hour}:00',
-        )
+        event, values = sg.Window(f'Work Tracking - {now.month}/{now.day}/{now.year}: {now.hour - 1}:00 - {now.hour}:00',
+            [
+                [sg.T(f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?'), sg.In(key='entry')],
+                [sg.B('OK'), sg.B('Cancel') ]
+            ]
+        ).read(close=True)
+        entry = values['entry']
         create_entry(now, entry)
     now = datetime.now()
     sleep(300)
