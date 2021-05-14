@@ -60,7 +60,7 @@ log.info('Initialization is complete, starting...')
 while True:    
     if is_workday(now) and is_workhour(now) and now.hour != last_hour:
         last_hour = now.hour
-        event, values = sg.Window(f'Work Tracking - {now.month}/{now.day}/{now.year}: {now.hour - 1}:00 - {now.hour}:00',
+        event, values = sg.Window(f'Time Tracking',
             [
                 [sg.T(f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?'), sg.In(key='entry')],
                 [sg.Submit('OK'), sg.Cancel('Cancel') ]
