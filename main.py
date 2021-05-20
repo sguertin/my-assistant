@@ -5,14 +5,14 @@ from os import getenv, mkdir
 from pathlib import Path
 from time import sleep
 
-import PySimpleGUI as sg
+import PySimpleGUIQt as sg
 
 logging.basicConfig(
     level=logging.CRITICAL,
     format='%(name)-15s %(message)s',
     datefmt='[%Y-%m-%d %H:%M:%S]',
 )
-sg.theme('DarkGrey11') 
+sg.theme('DarkBlue3') 
 
 log = logging.getLogger('TimeTracking')
 log.setLevel(logging.INFO)
