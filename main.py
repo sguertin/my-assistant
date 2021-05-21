@@ -62,7 +62,8 @@ while True:
         last_hour = now.hour
         event, values = sg.Window(f'Time Tracking',
             [
-                [sg.T(f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?'), sg.In(key='entry')],
+                [sg.T(f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?')],
+                [sg.In(key='entry')],
                 [sg.Submit('OK'), sg.Cancel('Cancel') ]
             ]
         ).read(close=True)
