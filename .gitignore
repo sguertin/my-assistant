@@ -3,5 +3,5 @@ __pycache__
 *.log
 
 TimeTracking
-
+.vscode/settings.json
 venv
