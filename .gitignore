@@ -5,3 +5,5 @@ __pycache__
 TimeTracking
 .vscode/settings.json
 venv
+
+entries.json
