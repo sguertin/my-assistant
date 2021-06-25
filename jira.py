@@ -37,12 +37,14 @@ class JiraService:
                 'Accept': 'application/json',
             }
     
-    def log_hours(self, issue_num: str, hours: float = 1):
+    def log_hours(self, issue_num: str, comment: str = None, hours: float = 1):
         url = f'{BASE_URL}/rest/api/2/issue/{issue_num}/worklog'
         
         if self.issue_exists(issue_num):
-            data = json.dumps({'timeSpent': f'{hours}h'})
-            response = requests.post(url, headers=self.headers, data=data)
+            data = {'timeSpent': f'{hours}h'}
+            if comment:
+                data['comment'] = comment
+            response = requests.post(url, headers=self.headers, data=json.dumps(data))
             self.last_status = response.status_code
             
             if response.status_code == 403:
