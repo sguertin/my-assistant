@@ -4,7 +4,7 @@ def warning_prompt(msg: str):
     sg.Window(f'Time Tracking - WARNING',
         [
             [sg.T(msg)],
-            [sg.Submit('Submit')]
+            [sg.Submit('Close')]
         ]
     ).read(close=True)
 
