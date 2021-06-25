@@ -1,12 +1,18 @@
-from os import getenv
+import logging
+from os import getenv, mkdir
 from pathlib import Path
 from configparser import ConfigParser
 
+log = logging.getLogger('config.py')
+log.setLevel(logging.INFO)
 
 WORKING_DIR = Path(getenv('USERPROFILE'), 'TimeTracking')
 ISSUES_LIST = Path(WORKING_DIR, 'issues.json')
 SETTINGS_FILE = Path(WORKING_DIR, 'settings.ini')
 
+if not WORKING_DIR.exists():
+    log.info(f'Working directory not found at {WORKING_DIR}, creating...')
+    mkdir(str(WORKING_DIR))
 
 def create_default_config():
     default_config = ConfigParser()

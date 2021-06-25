@@ -1,44 +1,29 @@
-import base64
 from datetime import datetime
 import logging
 import logging.config
-from os import mkdir
-from time import sleep
-
-import PySimpleGUIQt as sg
-
-from config import WORKING_DIR
-from issues import get_issues_list
-from jira import JiraResponse, JiraService, NEEDS_AUTH_CODE, FAILED_AUTH
-
-from taskfile import create_tracking_entry, get_last_hour
-from ui.credentials import credentials_prompt
-from ui.time_tracking import record_time
-from ui.warning import warning_prompt, warning_retry_prompt
 
 logging.basicConfig(
     level=logging.CRITICAL,
     format='%(name)-15s %(message)s',
     datefmt='[%Y-%m-%d %H:%M:%S]',
 )
-sg.theme('DarkBlue3') 
 
+from time import sleep
+
+import PySimpleGUIQt as sg
+
+from authentication import get_auth
+from issues import get_issues_list
+from jira import JiraResponse, JiraService, NEEDS_AUTH_CODE, FAILED_AUTH
+from taskfile import create_tracking_entry, get_last_hour
+from ui.time_tracking import record_time
+from ui.warning import warning_prompt, warning_retry_prompt
+
+sg.theme('DarkBlue3') 
 log = logging.getLogger('TimeTracking')
 log.setLevel(logging.INFO)
 
 last_hour = get_last_hour()
-
-def get_auth():
-    user_name, password = credentials_prompt()
-    encoding = base64.b64encode(f'{user_name}:{password}'.encode('utf-8'))    
-    return encoding.decode()
-
-
-if not WORKING_DIR.exists():
-    log.info(f'Working directory not found at {WORKING_DIR}, creating...')
-    mkdir(str(WORKING_DIR))
-
-
 def is_workday(date: datetime) -> bool:
     return date.weekday() < 5
 
@@ -89,7 +74,7 @@ def main_prompt(timestamp: datetime):
 
 if last_hour != 0:
     next = datetime(now.year, now.month, now.day, last_hour + 1, 0, 0)
-else:
+else: # No existing log file, assumes to start from the begining of the day
     next = datetime.now(now.year, now.month, now.day, 8, 0, 0)
 
 while True:        
