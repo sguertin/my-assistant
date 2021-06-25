@@ -1,71 +1,57 @@
-import base64
+from dataclasses import dataclass
 import json
-import logging
-from logging import Logger
+from typing import Optional
 import requests
+from config import JIRA_URL
 
-from ui.credentials import credentials_prompt
-from ui.warning import warning_prompt, warning_retry_prompt
+NEEDS_AUTH_CODE = 901
+FAILED_AUTH = 403
 
-BASE_URL = 'https://jira.housingcenter.com'
-
-def get_auth():
-    user_name, password = credentials_prompt()
-    encoding = base64.b64encode(f'{user_name}:{password}'.encode('utf-8'))
-    
-    return str(encoding).replace("b'", "").replace("'", "")
+@dataclass
+class JiraResponse:
+    status_code: int
+    message: Optional[str] = None
 
 class JiraService:
     auth: str
-    log: Logger
-    last_status: int
     
-    def __init__(self):
-        log = logging.getLogger('TimeTracking')
-        log.setLevel(logging.INFO)
-        self.log = log
-        self.auth = get_auth()
+    def __init__(self, auth: str):
+        self.auth = auth
         self.last_status = 0
         
     @property
-    def headers(self):
-        if not self.auth:
-            self.auth = get_auth()
+    def headers(self):        
         return { 
                 'Authorization' : f'Basic {self.auth}',
                 'Content-Type' : 'application/json',
                 'Accept': 'application/json',
             }
     
-    def log_hours(self, issue_num: str, comment: str = None, hours: float = 1):
-        url = f'{BASE_URL}/rest/api/2/issue/{issue_num}/worklog'
+    def log_hours(self, issue_num: str, comment: str = None, hours: float = 1) -> JiraResponse:
+        if not self.auth:            
+            return JiraResponse(NEEDS_AUTH_CODE, 'Need to reauthentication with Jira')
         
-        if self.issue_exists(issue_num):
+        url = f'{JIRA_URL}/rest/api/2/issue/{issue_num}/worklog'
+        
+        exists, status_code = self.issue_exists(issue_num)
+        if exists:
             data = {'timeSpent': f'{hours}h'}
             if comment:
                 data['comment'] = comment
             response = requests.post(url, headers=self.headers, data=json.dumps(data))
-            self.last_status = response.status_code
             
             if response.status_code == 403:
                 self.auth = False
-                retry = warning_retry_prompt(f'The credentials provided do not have access to issue {issue_num}, your hours have NOT been logged')
-                if retry:
-                    self.log_hours(issue_num, hours)
-
+                return JiraResponse(response.status_code, 'Authentication with Jira failed!')
             elif response.status_code != 201:
-                warning_msg = f'Jira replied with a status of {self.last_status}!'
-                self.log.warn(warning_msg)
-                warning_prompt(warning_msg)
-        else:
-            warning_msg = f'Jira encountered an error attempting to access {issue_num} with a Status Code of {self.last_status}'
-            self.log.warn(warning_msg)
-            warning_prompt(warning_msg)
-
-    def issue_exists(self, issue_num: str) -> bool:
-        url = f'{BASE_URL}/rest/api/2/issue/{issue_num}'
+                return JiraResponse(response.status_code, f'Expected status code of 201, got {response.status_code}')
+        else:           
+            warning_msg = f'Jira encountered an error attempting to access {issue_num} with a Status Code of {status_code}'
+            return JiraResponse(status_code, warning_msg)
+            
+    def issue_exists(self, issue_num: str) -> tuple[bool,int]:
+        url = f'{JIRA_URL}/rest/api/2/issue/{issue_num}'
         
         response = requests.get(url, headers=self.headers)
-        self.last_status = response.status_code
         
-        return response.status_code == 200
+        return response.status_code == 200, response.status_code
