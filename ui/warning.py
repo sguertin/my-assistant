@@ -16,5 +16,5 @@ def warning_retry_prompt(msg: str) -> bool:
             [sg.Submit('Retry'), sg.Cancel()]
         ]
     ).read(close=True)
-
+    
     return event == 'Retry'        
