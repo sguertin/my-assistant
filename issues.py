@@ -21,7 +21,9 @@ def get_issues_list() -> tuple[list[str],dict]:
         issues_map[key] = issue
     return list(issues_map.keys()), issues_map
 
-def add_issue(issue: dict):
+def add_issue(issue: dict) -> str:
     issues_list = get_raw_issues()
     issues_list.append(issue)
     save_issues_list(issues_list)
+    issue_num, description = issue['issue_num'], issue['description']
+    return f'{issue_num} - {description}'
