@@ -12,5 +12,5 @@ def credentials_prompt() -> tuple[str,str]:
         event, values = window.read(close=True)
         if event == 'Submit':
             return values['-USER-'], values['-PASSWORD-']
-        elif event == 'Cancel':
+        elif event in ('Cancel', sg.WIN_CLOSED):
             return '', ''
