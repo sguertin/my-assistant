@@ -1,14 +1,18 @@
 from datetime import datetime
 
 import PySimpleGUI as sg
+from PySimpleGUI.PySimpleGUI import WIN_CLOSED
 
 from issues import add_issue
 
 def get_entry_info()-> tuple[str, str]:
     issue_field = sg.In(key='-ISSUE-')
     desc_field = sg.In(key='-DESCRIPTION-')
-    window = sg.Window(f'Time Tracking', [
+    result_field = sg.T(f'                                        ', visible=False)
+    
+    window = sg.Window(f'Time Tracking - Add New Entry', [
             [sg.T(f'Please provide the Issue information')],
+            [result_field],
             [sg.T(f'Issue Number: '), issue_field],
             [sg.T(f'Description: '), desc_field],
             [
@@ -20,17 +24,18 @@ def get_entry_info()-> tuple[str, str]:
     )    
     while True:
         event, values = window.read()
-        issue_num, description = values['-ISSUE-'], values['-DESCRIPTION-']
-        if event == 'Cancel' or not issue_num:
+        if event in ('Cancel', sg.WIN_CLOSED):
             window.close()
             return None, None
-        else:
+        else:            
+            issue_num, description = values['-ISSUE-'], values['-DESCRIPTION-']
             issue = { 'issue_num': issue_num, 'description': description }
             add_issue(issue)                
             if event == 'Save':
                 window.close()
                 return f'{issue_num} - {description}'
             elif event == 'Another':
+                result_field.update(f'Issue {issue_num} was successfully added', visible=True)
                 issue_field.Update('', select=True)
                 desc_field.Update('')        
             
@@ -44,12 +49,12 @@ def record_time(entries: list[str], timestamp: datetime) -> tuple[str,str]:
             [sg.Submit(), sg.Cancel('Cancel') ],
         ]
     )
-    while True:
+    while True:        
         event, values = window.read()
         if event == 'Submit':
             window.close()
             return values['-ENTRY-'], values['-COMMENT-']
-        elif event == 'Cancel':
+        elif event in ('Cancel', sg.WIN_CLOSED):
             window.close()
             return None, None
         elif event == 'AddEntry':
