@@ -12,8 +12,9 @@ def save_issues_list(issues_list: list[dict]):
 
 def get_issues_list() -> tuple[list[str],dict]:    
     issues_list = get_raw_issues()
-
     issues_map = {}
+    if (len(issues_list) == 0):
+        return [], {}
     for issue in issues_list:
         issue_num, description = issue['issue_num'], issue['description']
         key = f'{issue_num} - {description}'

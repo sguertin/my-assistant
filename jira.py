@@ -48,10 +48,17 @@ class JiraService:
         else:           
             warning_msg = f'Jira encountered an error attempting to access {issue_num} with a Status Code of {status_code}'
             return JiraResponse(status_code, warning_msg)
-            
+    
     def issue_exists(self, issue_num: str) -> tuple[bool,int]:
         url = f'{JIRA_URL}/rest/api/2/issue/{issue_num}'
         
         response = requests.get(url, headers=self.headers)
         
         return response.status_code == 200, response.status_code
+
+class MockJiraService(JiraService):
+    def log_hours(self, issue_num: str, comment: str = None, hours: float = 1) -> JiraResponse:
+        return JiraResponse(201, None)
+
+    def issue_exists(self, issue_num: str) -> tuple[bool,int]:
+        return True, 200

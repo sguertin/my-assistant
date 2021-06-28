@@ -1,17 +1,13 @@
 from datetime import datetime
-import json
-from pathlib import Path
 
-import PySimpleGUIQt as sg
+import PySimpleGUI as sg
 
 from issues import add_issue
-
 
 def get_entry_info()-> tuple[str, str]:
     issue_field = sg.In(key='-ISSUE-')
     desc_field = sg.In(key='-DESCRIPTION-')
-    window = sg.Window(f'Time Tracking',
-        [
+    window = sg.Window(f'Time Tracking', [
             [sg.T(f'Please provide the Issue information')],
             [sg.T(f'Issue Number: '), issue_field],
             [sg.T(f'Description: '), desc_field],
@@ -39,16 +35,15 @@ def get_entry_info()-> tuple[str, str]:
                 desc_field.Update('')        
             
 
-def record_time(entries: list[str], now: datetime) -> tuple[str,str]:
+def record_time(entries: list[str], timestamp: datetime) -> tuple[str,str]:
     combo = sg.Combo(entries, key='-ENTRY-')
-    window = sg.Window(f'Time Tracking',
-            [
-                [sg.T(f'What have you been working on for {now.hour - 1}:00 - {now.hour}:00?')],
-                [combo, sg.Button(button_text='Add Entry', key='AddEntry')],
-                [sg.T('Comment (Optional): '), sg.In('-COMMENT-')]
-                [sg.Submit('OK'), sg.Cancel('Cancel') ]
-            ]
-        )
+    window = sg.Window(f'Time Tracking', [
+            [sg.T(f'What have you been working on for {timestamp.hour - 1}:00 - {timestamp.hour}:00?')],
+            [combo, sg.Button(button_text='Add Entry', key='AddEntry')],
+            [sg.T('Comment (Optional): '), sg.In(key='-COMMENT-')],
+            [sg.Submit(), sg.Cancel('Cancel') ],
+        ]
+    )
     while True:
         event, values = window.read()
         if event == 'Submit':

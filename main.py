@@ -1,20 +1,18 @@
 from datetime import datetime
 import logging
 import logging.config
+from time import sleep
 
 logging.basicConfig(
     level=logging.CRITICAL,
     format='%(name)-15s %(message)s',
     datefmt='[%Y-%m-%d %H:%M:%S]',
 )
-
-from time import sleep
-
-import PySimpleGUIQt as sg
+import PySimpleGUI as sg
 
 from authentication import get_auth
 from issues import get_issues_list
-from jira import JiraResponse, JiraService, NEEDS_AUTH_CODE, FAILED_AUTH
+from jira import JiraResponse, JiraService, NEEDS_AUTH_CODE, FAILED_AUTH, MockJiraService
 from taskfile import create_tracking_entry, get_last_hour
 from ui.time_tracking import record_time
 from ui.warning import warning_prompt, warning_retry_prompt
@@ -34,13 +32,13 @@ now = datetime.now()
 
 issues_list, issues_map = get_issues_list()
 
-jira = JiraService(get_auth())
+jira = MockJiraService(get_auth())
 
 log.info('Initialization is complete, starting...')
 
 def try_log_work(issue, comment) -> JiraResponse:
     retry = False
-    response = jira.log_hours(issue['issue_num'], comment)
+    response = jira.log_hours(issue, comment)
     if response.status_code != 201:
         log.warning(response.message)
         retry = warning_retry_prompt(response.message)
@@ -52,7 +50,7 @@ def try_log_work(issue, comment) -> JiraResponse:
 
 def main_prompt(timestamp: datetime):
     issues_list, issues_map = get_issues_list()
-    entry, comment = record_time(issues_list)
+    entry, comment = record_time(issues_list, timestamp)
     if entry is not None:
         if entry not in issues_list: # Check if any new issue entries were added
             issues_list, issues_map = get_issues_list()
@@ -74,8 +72,9 @@ def main_prompt(timestamp: datetime):
 
 if last_hour != 0:
     next = datetime(now.year, now.month, now.day, last_hour + 1, 0, 0)
-else: # No existing log file, assumes to start from the begining of the day
-    next = datetime.now(now.year, now.month, now.day, 8, 0, 0)
+else: 
+    # No existing log file, assumes to start from the begining of the day
+    next = datetime(now.year, now.month, now.day, 8, 0, 0)
 
 while True:        
     now = datetime.now()
