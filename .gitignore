@@ -6,5 +6,5 @@ TimeTracking
 .vscode/settings.json
 venv
 
-entries.json
+issues.json
 settings.ini

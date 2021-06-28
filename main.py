@@ -11,13 +11,15 @@ logging.basicConfig(
 import PySimpleGUI as sg
 
 from authentication import get_auth
+from config import THEME
 from issues import get_issues_list
 from jira import JiraResponse, JiraService, NEEDS_AUTH_CODE, FAILED_AUTH, MockJiraService
 from taskfile import create_tracking_entry, get_last_hour
 from ui.time_tracking import record_time
 from ui.warning import warning_prompt, warning_retry_prompt
 
-sg.theme('DarkBlue3') 
+sg.theme(THEME)
+
 log = logging.getLogger('TimeTracking')
 log.setLevel(logging.INFO)
 
@@ -32,7 +34,7 @@ now = datetime.now()
 
 issues_list, issues_map = get_issues_list()
 
-jira = MockJiraService(get_auth())
+jira = JiraService(get_auth())
 
 log.info('Initialization is complete, starting...')
 
