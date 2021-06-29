@@ -1,29 +1,36 @@
-import json
+from dataclasses import dataclass
 
-from config import ISSUES_LIST
+from dataclasses_json import dataclass_json
 
-def get_raw_issues() -> list[dict]:
-    with open(ISSUES_LIST, 'r') as f:
-        return json.loads(f.read())
+from config import ISSUES_LIST, DELETED_ISSUES_LIST
+
+@dataclass_json
+@dataclass
+class Issue:
+    issue_num: str
+    description: str
     
-def save_issues_list(issues_list: list[dict]):
+    def __str__(self):
+        return f'{self.issue_num} - {self.description}'
+
+
+def get_issues_list() -> list[Issue]:
+    with open(ISSUES_LIST, 'r') as f:
+        return Issue.schema().loads(f.read(), many=True)
+
+def get_deleted_issues() -> list[Issue]:
+    with open(DELETED_ISSUES_LIST, 'r') as f:
+        return Issue.schema().loads(f.read(), many=True)
+
+def save_issues_list(issues_list: list[Issue], deleted_issues_list: list[Issue] = None):
     with open(ISSUES_LIST, 'w') as f:
-        f.write(json.dumps(issues_list))
+        f.write(Issue.schema().dumps(issues_list, many=True))
+    
+    if deleted_issues_list:
+        with open(DELETED_ISSUES_LIST, 'w') as f:
+            f.write(Issue.schema().dumps(deleted_issues_list, many=True))
 
-def get_issues_list() -> tuple[list[str],dict]:    
-    issues_list = get_raw_issues()
-    issues_map = {}
-    if (len(issues_list) == 0):
-        return [], {}
-    for issue in issues_list:
-        issue_num, description = issue['issue_num'], issue['description']
-        key = f'{issue_num} - {description}'
-        issues_map[key] = issue
-    return list(issues_map.keys()), issues_map
-
-def add_issue(issue: dict) -> str:
-    issues_list = get_raw_issues()
+def add_issue(issue: Issue):
+    issues_list = get_issues_list()
     issues_list.append(issue)
     save_issues_list(issues_list)
-    issue_num, description = issue['issue_num'], issue['description']
-    return f'{issue_num} - {description}'
