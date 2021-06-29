@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import PySimpleGUI as sg
-from PySimpleGUI.PySimpleGUI import WIN_CLOSED
 
 from issues import add_issue
 
@@ -53,7 +52,7 @@ def record_time(entries: list[str], timestamp: datetime) -> tuple[str,str]:
         if event == 'Submit':
             window.close()
             return values['-ENTRY-'], values['-COMMENT-']
-        elif event in ('Cancel', sg.WIN_CLOSED):
+        elif event in ('Cancel', sg.WINDOW_CLOSED):
             window.close()
             return None, None
         elif event == 'AddEntry':
