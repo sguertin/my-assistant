@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 import json
 from typing import Optional
+
 import requests
+
 from config import JIRA_URL
 
 NEEDS_AUTH_CODE = 901
@@ -45,6 +47,7 @@ class JiraService:
                 return JiraResponse(response.status_code, 'Authentication with Jira failed!')
             elif response.status_code != 201:
                 return JiraResponse(response.status_code, f'Expected status code of 201, got {response.status_code}')
+            return JiraResponse(response.status_code)
         else:           
             warning_msg = f'Jira encountered an error attempting to access {issue_num} with a Status Code of {status_code}'
             return JiraResponse(status_code, warning_msg)
