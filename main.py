@@ -32,8 +32,6 @@ def is_workhour(date: datetime) -> bool:
 
 now = datetime.now()
 
-issues_list, issues_map = get_issues_list()
-
 jira = JiraService(get_auth())
 
 log.info('Initialization is complete, starting...')
@@ -47,26 +45,29 @@ def try_log_work(issue, comment) -> JiraResponse:
         if retry:
             if response.status_code in [NEEDS_AUTH_CODE, FAILED_AUTH]:
                 jira.auth = get_auth()
-            try_log_work(issue, comment)
+            return try_log_work(issue, comment)
     return response
 
 def main_prompt(timestamp: datetime):
-    issues_list, issues_map = get_issues_list()
-    entry, comment = record_time(issues_list, timestamp)
-    if entry is not None:
-        if entry not in issues_list: # Check if any new issue entries were added
-            issues_list, issues_map = get_issues_list()
+    issues_list = get_issues_list()
+    issue, comment = record_time(issues_list, timestamp)
+    if issue is not None:
+        if issue not in issues_list: # Check if any new issue entries were added
+            issues_list = get_issues_list()
         try:
-            issue = issues_map[entry]
-            response = try_log_work(issue['issue_num'], comment)
-            log.info(response)
-        except KeyError:
-            log.warning(f'Could not find an issue that matched {entry}')
+            response = try_log_work(issue.issue_num, comment)
+            log.debug(response)
         except Exception as ex:
             log.exception(ex)                
             warning_prompt(f'An unexpected error occurred posting log to Jira: {ex}')
         try:
-            create_tracking_entry(timestamp, entry)
+            create_tracking_entry(timestamp, issue)
+        except Exception as ex:
+            log.exception(ex)
+            warning_prompt(f'An unexpected error occurred writing an entry to the log file: {ex}')
+    else:
+        try:
+            create_tracking_entry(timestamp, 'No entry for this timeblock')
         except Exception as ex:
             log.exception(ex)
             warning_prompt(f'An unexpected error occurred writing an entry to the log file: {ex}')
@@ -76,7 +77,7 @@ if last_hour != 0:
     next = datetime(now.year, now.month, now.day, last_hour + 1, 0, 0)
 else: 
     # No existing log file, assumes to start from the begining of the day
-    next = datetime(now.year, now.month, now.day, 8, 0, 0)
+    next = datetime(now.year, now.month, now.day, 9, 0, 0)
 
 while True:        
     now = datetime.now()
