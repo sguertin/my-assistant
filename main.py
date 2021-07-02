@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import logging.config
 from time import sleep
@@ -33,9 +33,9 @@ def is_workhour(date: datetime) -> bool:
 now = datetime.now()
 
 jira = JiraService(get_auth())
+INTERVAL = timedelta(hours=1)
 
 log.info('Initialization is complete, starting...')
-
 def try_log_work(issue, comment) -> JiraResponse:
     retry = False
     response = jira.log_hours(issue, comment)
@@ -71,7 +71,7 @@ def main_prompt(timestamp: datetime):
         except Exception as ex:
             log.exception(ex)
             warning_prompt(f'An unexpected error occurred writing an entry to the log file: {ex}')
-    return datetime(timestamp.year, timestamp.month, timestamp.day, timestamp.hour + 1, 0, 0)
+    return datetime(timestamp.year, timestamp.month, timestamp.day, timestamp.hour, 0, 0) + INTERVAL
 
 if last_hour != 0:
     next = datetime(now.year, now.month, now.day, last_hour + 1, 0, 0)
@@ -81,10 +81,13 @@ else:
 
 while True:        
     now = datetime.now()
-    if is_workday(now) and is_workhour(now) and now.hour >= next.hour:
-        next = main_prompt(next)
-        # if Prompt is left open and more than one hour passes
-        # it will iterate through the hours that passed in between 
-        while next.hour < datetime.now().hour and is_workhour(next):
+    if now.hour >= next.hour:
+        if is_workday(now) and is_workhour(now):
             next = main_prompt(next)
+            # if Prompt is left open and more than one hour passes
+            # it will iterate through the hours that passed in between 
+            while next.hour < datetime.now().hour and is_workhour(next):
+                next = main_prompt(next)
+        else:
+            next = next + INTERVAL
     sleep(300)
