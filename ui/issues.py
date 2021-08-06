@@ -3,6 +3,7 @@ import PySimpleGUI as sg
 from issues import add_issue, Issue, save_issues_list, get_deleted_issues
 from ui.warning import warning_ok_cancel_prompt
 
+
 def get_issue_info(issues: list[Issue]):
     issue_field = sg.In(key='-ISSUE-')
     desc_field = sg.In(key='-DESCRIPTION-')

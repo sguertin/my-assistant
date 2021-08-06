@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from datetime import timedelta
 import json
 from typing import Optional
 
 import requests
 
-from config import JIRA_URL
+from config import get_settings
 
 NEEDS_AUTH_CODE = 901
 FAILED_AUTH = 403
@@ -16,10 +17,12 @@ class JiraResponse:
 
 class JiraService:
     auth: str
+    base_url: str
     
     def __init__(self, auth: str):
         self.auth = auth
         self.last_status = 0
+        self.base_url = get_settings().base_url
         
     @property
     def headers(self):        
@@ -29,15 +32,17 @@ class JiraService:
                 'Accept': 'application/json',
             }
     
-    def log_hours(self, issue_num: str, comment: str = None, hours: float = 1) -> JiraResponse:
+    def log_hours(self, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
+        if not time_interval:
+            time_interval = timedelta(hours=1)
         if not self.auth:            
             return JiraResponse(NEEDS_AUTH_CODE, 'Need to reauthentication with Jira')
         
-        url = f'{JIRA_URL}/rest/api/2/issue/{issue_num}/worklog'
+        url = f'{self.base_url}/rest/api/2/issue/{issue_num}/worklog'
         
         exists, status_code = self.issue_exists(issue_num)
         if exists:
-            data = {'timeSpent': f'{hours}h'}
+            data = {'timeSpentSeconds': { time_interval.seconds } }
             if comment:
                 data['comment'] = comment
             response = requests.post(url, headers=self.headers, data=json.dumps(data))
@@ -53,7 +58,7 @@ class JiraService:
             return JiraResponse(status_code, warning_msg)
     
     def issue_exists(self, issue_num: str) -> tuple[bool,int]:
-        url = f'{JIRA_URL}/rest/api/2/issue/{issue_num}'
+        url = f'{self.base_url}/rest/api/2/issue/{issue_num}'
         
         response = requests.get(url, headers=self.headers)
         

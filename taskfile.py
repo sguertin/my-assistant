@@ -1,46 +1,63 @@
-from datetime import datetime
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, date, time
 import logging
 from pathlib import Path
 
-from config import WORKING_DIR
+from dataclasses_json import dataclass_json, LetterCase
+
+from config import get_settings, WORKING_DIR
 
 log = logging.getLogger('TimeTracking')
 log.setLevel(logging.INFO)
 
-def create_tracking_entry(date: datetime, entry: str):    
-    task_file = get_log_file_path(date)
-    task_file_exists = task_file.exists()
-    with open(str(task_file), 'a+') as f:
-        if not task_file_exists:
-            log.info(f'Starting new file: {task_file}')
-            f.write(f'---------TimeTracking-{date.year}-{date.month}-{date.day}---------\n')
-        f.write(f'{date.hour - 1}:00-{date.hour}:00 - {entry}\n')
-    log.info(f'Entry logged for {date.hour}:00')
-
-def get_log_file_path(date: datetime) -> Path:
-    return Path(WORKING_DIR, f'TimeTracking-{date.year}-{date.month}-{date.day}.log')
-
-def get_last_hour() -> int:
-    current_task = get_log_file_path(datetime.now())
-    if (current_task.exists()):
-        log.info(f'Existing tracking found at {current_task}')
-        with open(str(current_task)) as f:
-            for line in f:
-                pass
-            last_line = line
-        
-        last_hour = int(last_line.partition('-')[2].partition(':')[0])
-        log.info(f'Last hour recorded: {last_hour}:00') 
-        return last_hour
-    else:
-        return 0
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class TimeEntry:
+    start_time: time
+    end_time: time
+    entry: str
     
-def create_tracking_entry(date: datetime, entry: str):    
-    task_file = get_log_file_path(date)
-    task_file_exists = task_file.exists()    
-    with open(str(task_file), 'a+') as f:
-        if not task_file_exists:
-            log.info(f'Starting new file: {task_file}')
-            f.write(f'---------TimeTracking-{date.year}-{date.month}-{date.day}---------\n')
-        f.write(f'{date.hour - 1}:00-{date.hour}:00 - {entry}\n')
-    log.info(f'Entry logged for {date.hour}:00')
+    def __init__(self, start_time: datetime, end_time: datetime, entry: str):
+        self.start_time = start_time.time()
+        self.end_time = end_time.time()
+        self.entry = entry
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class TimeDayLog:
+    log_date: date
+    file_name: str
+    time_entries: list[TimeEntry]
+    
+    def __init__(self):
+        today = date.today()
+        self.log_date = today
+        self.time_entries = []
+        self.file_name = f'TimeTracking-{today.year}-{today.month}-{today.day}.log'
+
+
+def get_time_log_path(timestamp: datetime) -> Path:
+    return Path(WORKING_DIR, f'TimeTracking-{timestamp.year}-{timestamp.month}-{timestamp.day}.log')
+
+def get_time_log(timestamp: datetime) -> TimeDayLog:
+    task_file = get_time_log_path(timestamp)
+    if not task_file.exists():
+        task_log = TimeDayLog()
+    else:
+        with open(task_file, 'r') as f:
+            task_log = TimeDayLog.from_json(f.read())
+    return task_log        
+
+def create_tracking_entry(timestamp: datetime, entry: str, time_interval: timedelta):    
+    task_log: TimeDayLog = get_time_log(timestamp)
+    
+    task_log.time_entries.append(TimeEntry(timestamp - time_interval, timestamp, entry))
+    with open(get_time_log_path(timestamp), 'w') as f:
+        f.write(task_log.to_json())
+
+def get_last_entry_time(timestamp: datetime) -> time:
+    task_log = get_time_log(timestamp)
+    if len(task_log.time_entries) > 0:
+        return task_log.time_entries[-1].end_time # 
+    return None
+
