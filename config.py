@@ -31,6 +31,7 @@ if not DELETED_ISSUES_LIST.exists():
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Settings:
+    __slots__ = ['theme', 'base_url', 'start_hour', 'start_minute', 'end_hour', 'end_minute', 'interval_hours', 'interval_minutes', 'enable_jira']
     theme: str = 'DarkBlue3'
     base_url: str = 'https://jira.housingcenter.com'    
     start_hour: int = 8
@@ -40,7 +41,7 @@ class Settings:
     interval_hours: int = 1
     interval_minutes: int = 0
     enable_jira: bool = True
-    
+
     def save(self):
         with open(SETTINGS_FILE, 'w') as f:
             f.write(self.to_json())
