@@ -1,18 +1,5 @@
-from dataclasses import dataclass
-
-from dataclasses_json import dataclass_json
-
-from config.settings import ISSUES_LIST, DELETED_ISSUES_LIST
-
-@dataclass_json
-@dataclass
-class Issue:
-    issue_num: str
-    description: str
-    disabled: bool = False
-    def __str__(self):
-        return f'{self.issue_num} - {self.description}'
-
+from .settings import ISSUES_LIST, DELETED_ISSUES_LIST
+from ..models.issue import Issue
 
 def get_issues_list() -> list[Issue]:
     with open(ISSUES_LIST, 'r') as f:
