@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
@@ -7,9 +6,25 @@ from pathlib import Path
 
 from dataclasses_json import dataclass_json, LetterCase
 
-log = logging.getLogger('TimeTracking.config')
+log = logging.getLogger('Settings')
 log.setLevel(logging.INFO)
 
+LOGGING_LEVELS = [
+    ('Critical', logging.CRITICAL), 
+    ('Error', logging.ERROR), 
+    ('Warning', logging.WARNING), 
+    ('Info', logging.INFO), 
+    ('Debug', logging.DEBUG)
+]
+DAYS_OF_WEEK = [
+    ('Monday', 0),
+    ('Tuesday', 1),
+    ('Wednesday', 2),
+    ('Thursday', 3),
+    ('Friday', 4),
+    ('Saturday', 5),
+    ('Sunday', 6),
+]
 WORKING_DIR: Path = Path(getenv('USERPROFILE'), 'TimeTracking')
 ISSUES_LIST: Path = Path(WORKING_DIR, 'issues.json')
 DELETED_ISSUES_LIST: Path = Path(WORKING_DIR, 'deletedIssues.json')
@@ -45,6 +60,10 @@ class Settings:
     enable_jira: bool = True
     log_level: int = logging.INFO
 
+    @property
+    def time_interval(self) -> timedelta:
+        return datetime(2000, 1, 1, abs(self.interval_hours),
+                                    abs(self.interval_minutes), 0, 0) - datetime(2000, 1, 1, 0, 0, 0, 0)
     def validate(self) -> list[str]:
         error_list = []
         if self.start_hour not in HOUR_RANGE:
@@ -61,9 +80,8 @@ class Settings:
         end_time = datetime(now.year, now.day, now.month, self.end_hour, self.end_minute)
         if self.start_hour > self.end_hour:
             end_time = end_time + DAY
-        interval_time = datetime(now.year, now.day, now.month, self.interval_hours, self.interval_minutes) - datetime(now.year, now.month, now.day, 0, 0, 0)
         total_workday = start_time - end_time
-        if total_workday < interval_time:
+        if total_workday < self.time_interval:
             error_list.append(f'Entire workday [{self.start_hour}:{self.start_minute}] - [{self.end_hour}:{self.end_minute}] '+
                             f'is less than time recording interval: [{self.interval_hours}:{self.interval_minutes}]')
         return error_list
@@ -84,3 +102,13 @@ def get_settings() -> Settings:
     else:
         with open(SETTINGS_FILE, 'r') as f:
             return Settings.from_json(f.read())
+
+def clean_settings(self: Settings) -> Settings:
+    start_hour = abs(self.start_hour)
+    start_minute = abs(self.start_minute)
+    end_hour = abs(self.end_hour)
+    end_minute = abs(self.end_minute)
+    interval_hours = abs(self.interval_hours)
+    interval_minutes = abs(self.interval_minutes)
+    return Settings(self.theme, self.base_url, start_hour, start_minute, end_hour, end_minute,
+                    interval_hours, interval_minutes, self.enable_jira, self.log_level)
