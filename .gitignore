@@ -7,7 +7,8 @@ __pycache__
 
 TimeTracking
 .vscode/settings.json
-venv
+venv*
 
+build/
 issues.json
 settings.json
