@@ -1,28 +1,32 @@
 import PySimpleGUI as sg
 
-"""
-    Allows you to "browse" through the Theme settings.  Click on one and you'll see a
-    Popup window using the color scheme you chose.  It's a simple little program that also demonstrates
-    how snappy a GUI can feel if you enable an element's events rather than waiting on a button click.
-    In this program, as soon as a listbox entry is clicked, the read returns.
-"""
-# TODO Update this to allow for selecting a theme
 
-layout = [
-    [sg.Text('Theme Browser')],
-    [sg.Text('Click a Theme color to see demo window')],
-    [sg.Listbox(values=sg.theme_list(), size=(20, 12), key='-LIST-', enable_events=True)],
-    [sg.Button('Exit')]
-]
+from ..models.settings import Settings
 
-window = sg.Window('Theme Browser', layout)
+def manage_theme(settings: Settings):        
+    layout = [
+        [sg.Text('Theme Browser')],
+        [sg.Text('Click a Theme color to see demo window')],
+        [sg.Listbox(values=sg.theme_list(), size=(20, 12), key='-LIST-', enable_events=True)],
+        [sg.Button('Update'), sg.Button('Exit')]
+    ]
 
-while True:  # Event Loop
-    event, values = window.read()
-    if event in (sg.WIN_CLOSED, 'Exit'):
-        break
-    sg.theme(values['-LIST-'][0])
-    sg.popup_get_text('This is {}'.format(values['-LIST-'][0]))
-    window.refresh()
+    window = sg.Window('Theme Browser', layout)
+        
+    while True:  # Event Loop
+        event, values = window.read()
+        if event in (sg.WIN_CLOSED, 'Exit'):
+            break
+        new_theme = values['-LIST-'][0]
+        sg.theme(new_theme)
+        sg.popup_get_text(f'This is {new_theme}')
+        if event == 'Update':
+            if settings.theme != new_theme:
+                settings.theme = new_theme
+                settings.save()
+            break
+        else:
+            sg.theme(settings.theme)
 
-window.close()
+    window.close()
+    return settings

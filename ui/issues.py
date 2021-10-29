@@ -1,10 +1,16 @@
 import PySimpleGUI as sg
 
-from config.issues import add_issue, Issue, get_issues_list, save_issues_list, get_deleted_issues
-from ui.warning import warning_ok_cancel_prompt
+from ..services.issues import add_issue, get_issues_list, save_issues_list, get_deleted_issues
+from ..models.issues import Issue
+from .warning import warning_ok_cancel_prompt
 
 
 def get_issue_info(issues: list[Issue]):
+    """Creates UI control to capture issue information and add to list
+
+    Args:
+        issues (list[Issue]): The current list of issues
+    """
     issue_field = sg.In(key='-ISSUE-')
     desc_field = sg.In(key='-DESCRIPTION-')
     result_field = sg.T(
@@ -43,6 +49,7 @@ def get_issue_info(issues: list[Issue]):
         else:
             window.close()
             break
+    return issues
 
 
 def manage_issues(combo: sg.Combo = None):
@@ -75,7 +82,7 @@ def manage_issues(combo: sg.Combo = None):
     while True:
         event, values = window.read()
         if event == '-ADD-':
-            get_issue_info(issues)
+            issues = get_issue_info(issues)
             active_list_box.update(issues)
             has_changes = True
         elif event == '-REMOVE-':
