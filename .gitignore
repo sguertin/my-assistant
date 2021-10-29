@@ -9,6 +9,6 @@ TimeTracking
 .vscode/settings.json
 venv*
 
-build/
+build/build
 issues.json
 settings.json
