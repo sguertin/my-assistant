@@ -4,7 +4,8 @@ import logging
 
 from dataclasses_json import dataclass_json, LetterCase
 
-from ..config.settings import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
+from ..constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
+
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
@@ -20,19 +21,19 @@ class Settings:
     enable_jira: bool = True
     log_level: int = logging.INFO
     days_of_week: list[int] = [0, 1, 2, 3, 4]
-    
+
     @property
     def time_interval(self) -> timedelta:
         return timedelta(
-            hours=self.interval_hours, 
+            hours=self.interval_hours,
             minutes=self.interval_minutes
-        )    
+        )
 
     @property
     def start_time(self) -> datetime:
         now = datetime.now()
         if self.start_hour > self.end_hour and now.hour <= self.end_hour:
-            return datetime(now.year, now.day, now.month, self.start_hour, self.start_minute, 0) - timedelta(days=1)    
+            return datetime(now.year, now.day, now.month, self.start_hour, self.start_minute, 0) - timedelta(days=1)
         return datetime(now.year, now.day, now.month,
                         self.start_hour, self.start_minute, 0)
 
@@ -41,13 +42,23 @@ class Settings:
         now = datetime.now()
         if self.start_hour > self.end_hour and now.hour <= self.end_hour:
             return datetime(now.year, now.day, now.month, self.end_hour, self.end_minute, 0)
-        return datetime(now.year, now.day, now.month, self.end_hour, self.end_minute, 0) + timedelta(days=1)    
-    
+        return datetime(now.year, now.day, now.month, self.end_hour, self.end_minute, 0) + timedelta(days=1)
+
     @property
     def work_day(self) -> timedelta:
-        return self.end_time - self.start_time
-    
+        """The duration of a workday
+
+        Returns:
+            timedelta: time between start_time and end_time
+        """
+        return self.end_time - self.start_time    
+
     def validate(self) -> list[str]:
+        """Validates if the settings provided are valid
+
+        Returns:
+            list[str]: List of errors found during validation process
+        """
         error_list = []
         if self.start_hour not in HOUR_RANGE:
             error_list.append(
@@ -68,6 +79,27 @@ class Settings:
                               f'is less than time recording interval: [{self.interval_hours}:{self.interval_minutes}]')
         return error_list
 
-    def save(self) -> None:
+    @classmethod
+    def restore_defaults(cls):
+        """Restores the settings to their default
+
+            Returns:
+                Settings: the default settings
+        """
+        settings = cls()
+        settings.save()
+        return settings
+
+    @classmethod
+    def load(cls):
+        if not SETTINGS_FILE.exists():
+            return cls.restore_defaults()
+        with open(SETTINGS_FILE, 'r') as f:
+            cls.from_json(f.read())
+
+    def save(self):
+        """Saves current settings to configuration file
+
+        """
         with open(SETTINGS_FILE, 'w') as f:
             f.write(self.to_json())
