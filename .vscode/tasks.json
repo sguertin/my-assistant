@@ -1,0 +1,41 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run with Python 3.9",
+            "type": "shell",
+            "command": "& build/scripts/Run-Application.ps1",
+            "windows": {
+                "command": "& build\\scripts\\Run-Application.ps1"
+            },
+            "args": ["-Legacy"]
+        },
+        {
+            "label": "Run with Python 3.10",
+            "type": "shell",
+            "command": "& build/scripts/Run-Application.ps1",
+            "windows": {
+                "command": "& build\\scripts\\Run-Application.ps1"
+            }
+        },
+        {
+            "label": "Build with Python 3.9",
+            "type": "shell",
+            "command": "& build/Create-AssistantExe.ps1",
+            "windows": {
+                "command": "& build\\scripts\\Create-AssistantExe.ps1"
+            },
+            "args": ["-Legacy"]
+        },
+        {
+            "label": "Build with Python 3.10",
+            "type": "shell",
+            "command": "& build/Create-AssistantExe.ps1",
+            "windows": {
+                "command": "& build\\scripts\\Create-AssistantExe.ps1"
+            }
+        }
+    ]
+}
