@@ -1,43 +1,40 @@
-from dataclasses import dataclass
-from datetime import timedelta, datetime
+from datetime import timedelta
 import logging
 from logging import Logger
 import json
-from typing import Optional
 
 import requests
 
-from config.settings import Settings
+from ..interfaces.authentication import IAuthenticationProvider
+from ..interfaces.ui import IUIProvider
+from ..models.issues import Issue
+from ..models.jira import JiraResponse
+from ..models.settings import Settings
 
 NEEDS_AUTH_CODE = 901
 FAILED_AUTH = 403
 
 
-@dataclass
-class JiraResponse:
-    status_code: int
-    message: Optional[str] = None
-
-
 class JiraService:
-    auth: str
+    auth_provider: IAuthenticationProvider
+    ui_provider: IUIProvider
     log: Logger
     settings: Settings
 
-    def __init__(self, auth: str, settings: Settings):
-        self.auth = auth
+    def __init__(self, auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings):
+        self.auth_provider = auth_provider
+        self.ui_provider = ui_provider
         self.last_status = 0
         self.settings = settings
         self.log = logging.getLogger('JiraService')
 
-    @property
     def base_url(self) -> str:
         return self.settings.base_url
 
     @property
     def headers(self) -> dict[str, str]:
         return {
-            'Authorization': f'Basic {self.auth}',
+            'Authorization': f'{self.auth_provider.get_auth()}',
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
@@ -50,12 +47,28 @@ class JiraService:
             'Accept': 'application/json',
         }
 
+    def try_log_work(self, issue: Issue, comment: str = None, time_interval: timedelta = None) -> None:
+        if time_interval is None:
+            time_interval = self.settings.time_interval
+        response = self.log_hours(issue, comment, time_interval)
+        if response.status_code != 201:
+            self.log.warning(
+                f'Received Response Code: {response.status_code} Message: {response.message}')
+            retry = self.ui_provider.warning_retry_prompt(
+                f'Received unexpected response from Jira: HttpStatusCode: {response.status_code} Message: "{response.message}"')
+            if retry:
+                if response.status_code in [NEEDS_AUTH_CODE, FAILED_AUTH]:
+                    credentials = self.ui_provider.credentials_prompt()
+                    self.auth_provider.set_auth(credentials)
+                return self.try_log_work(issue, comment)
+        self.log.debug(response)
+
     def log_hours(self, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
         if not time_interval:
             time_interval = timedelta(hours=self.settings.interval_hours, minutes=self.settings.interval_minutes)
-        if not self.auth:
+        if not self.auth_provider.get_auth():
             self.log.debug('Credentials not found')
-            return JiraResponse(NEEDS_AUTH_CODE, 'Need to reauthentication with Jira')
+            return JiraResponse(NEEDS_AUTH_CODE, 'Need to reauthenticate with Jira')
 
         url = f'{self.base_url}/rest/api/2/issue/{issue_num}/worklog'
 
@@ -70,7 +83,7 @@ class JiraService:
                 url, headers=self.headers, data=json.dumps(data))
 
             if response.status_code == 403:
-                self.auth = False
+                self.auth_provider.clear_auth()
                 return JiraResponse(response.status_code, 'Authentication with Jira failed!')
             elif response.status_code != 201:
                 return JiraResponse(response.status_code, f'Expected status code of 201, got {response.status_code}')
@@ -97,12 +110,20 @@ class MockJiraService(JiraService):
         self.log = logging.getLogger('MockJiraService')
         self.log = settings.log_level
 
+    def try_log_work(self, issue: Issue, comment: str, time_interval: timedelta=None) -> None:
+        pass
+    
     def log_hours(self, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
         return JiraResponse(201, 'This is a fake Jira Response!')
 
     def issue_exists(self, issue_num: str) -> tuple[bool, int]:
         return True, 200
 
+def get_jira_service(auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings):
+    if settings.enable_jira:
+        return JiraService(auth_provider, ui_provider, settings)
+    else:
+        return MockJiraService('', settings)
 
 def debug_log_hours(jira_service: JiraService, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
     if time_interval is None:
