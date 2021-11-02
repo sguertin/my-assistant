@@ -11,12 +11,8 @@ class ILauncherService:
     """Creates the UI for the launcher and handles input
     """
 
-    def __init__(self,
-                 assistant: IAssistant,
-                 ui_provider: IUIProvider,
-                 settings: Settings,
-                 factory: Callable[[], tuple[IAssistant, IUIProvider, Settings]]):
-        raise TypeError("Interfaces cannot be initialized!")
+    def __init__(self, *args):
+        raise TypeError("Interface ILauncherService cannot be initialized")
 
     def run_main_window(self) -> None:
         """Runs main application window

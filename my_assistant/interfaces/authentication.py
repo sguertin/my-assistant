@@ -2,8 +2,9 @@ class IAuthenticationProvider:
     """interface for an authentication provider for storing and returning credentials
     """
 
-    def __init__(self):
-        raise TypeError('Interfaces are not to be instantiated')
+    def __init__(self, *args):
+        raise TypeError(
+            'Interface IAuthenticationProvider cannot be initialized')
 
     def clear_auth(self) -> None:
         """Clears the current authentication token

@@ -18,8 +18,8 @@ class IAssistant:
             Settings: Application configuration state
     """
 
-    def __init__(self, time_tracking: ITimeTrackingService, ui_provider: IUIProvider, task_service: ITaskFileService, issue_service: IIssueService, settings: Settings):
-        raise TypeError("Interface cannot be initialized")
+    def __init__(self, *args):
+        raise TypeError("Interface IAssistant cannot be initialized")
 
     def run(self) -> None:
         """Runs to test if it's time to record a new entry and record the new entry if so

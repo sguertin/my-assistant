@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Callable
 
-from PySimpleGUI import PySimpleGUI as sg
-
 from my_assistant.models.issues import Issue
 from my_assistant.models.settings import Settings
 
@@ -10,6 +8,9 @@ from my_assistant.models.settings import Settings
 class IUIProvider:
     """Interface for UIProviders
     """
+
+    def __init__(self, *args):
+        raise TypeError('Interface IUIProvider cannot be initialized')
 
     def change_settings(self, settings: Settings) -> Settings:
         """Creates a UI Prompt for updating application settings
