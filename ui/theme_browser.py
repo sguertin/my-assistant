@@ -1,18 +1,19 @@
 import PySimpleGUI as sg
 
+from models.settings import Settings
 
-from ..models.settings import Settings
 
-def manage_theme(settings: Settings):        
+def manage_theme(settings: Settings):
     layout = [
         [sg.Text('Theme Browser')],
         [sg.Text('Click a Theme color to see demo window')],
-        [sg.Listbox(values=sg.theme_list(), size=(20, 12), key='-LIST-', enable_events=True)],
+        [sg.Listbox(values=sg.theme_list(), size=(20, 12),
+                    key='-LIST-', enable_events=True)],
         [sg.Button('Update'), sg.Button('Exit')]
     ]
 
     window = sg.Window('Theme Browser', layout)
-        
+
     while True:  # Event Loop
         event, values = window.read()
         if event in (sg.WIN_CLOSED, 'Exit'):

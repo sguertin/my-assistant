@@ -1,8 +1,8 @@
 import PySimpleGUI as sg
 
-from ..services.issues import add_issue, get_issues_list, save_issues_list, get_deleted_issues
-from ..models.issues import Issue
-from .warning import warning_ok_cancel_prompt
+from services.issues import add_issue, get_issues_list, save_issues_list, get_deleted_issues
+from models.issues import Issue
+from ui.warning import warning_ok_cancel_prompt
 
 
 def get_issue_info(issues: list[Issue]):

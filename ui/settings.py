@@ -2,9 +2,9 @@ import logging
 
 import PySimpleGUI as sg
 
-from ..models.settings import Settings
-from .warning import warning_prompt
-from ..constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
+from models.settings import Settings
+from ui.warning import warning_prompt
+from constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
 
 
 def change_settings(settings: Settings):
@@ -53,5 +53,5 @@ def create_new_settings(values, theme) -> Settings:
         int(values['interval_hours']), int(values['interval_minutes']),
         values['enable_jira'],
         LOGGING_LEVELS[values['log_level']],
-        [value for day, value in DAYS_OF_WEEK.items() if values[day] ],
+        [value for day, value in DAYS_OF_WEEK.items() if values[day]],
     )

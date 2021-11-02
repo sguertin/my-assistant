@@ -2,17 +2,17 @@ import logging
 import logging.config
 from os import mkdir
 
-from .providers.authentication import BasicAuthenticationProvider
-from .providers.ui import UIProvider
+from providers.authentication import BasicAuthenticationProvider
+from providers.ui import UIProvider
 
-from .constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE
-from .models.settings import Settings
-from .services.assistant import Assistant
-from .services.jira import get_jira_service
-from .ui.warning import warning_prompt, warning_retry_prompt
-from .ui.credentials import credentials_prompt
-from .ui.time_tracking import record_time
-from .ui.launcher import Launcher
+from constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE
+from models.settings import Settings
+from services.assistant import Assistant
+from services.time_tracking import get_time_tracking_service
+from ui.warning import warning_prompt, warning_retry_prompt
+from ui.credentials import credentials_prompt
+from ui.time_tracking import record_time
+from ui.launcher import Launcher
 
 
 logging.basicConfig(
@@ -41,17 +41,19 @@ if not SETTINGS_FILE.exists():
 
 auth_provider = BasicAuthenticationProvider()
 
-def create_dependencies() -> tuple[Assistant, Settings]:
-    settings = Settings.load()    
-    ui_provider = UIProvider(warning_prompt, warning_retry_prompt, record_time, credentials_prompt)    
-    jira = get_jira_service(auth_provider, ui_provider, settings)
-    assistant = Assistant(jira, ui_provider, settings)    
+
+def create_dependencies() -> 'tuple[Assistant, Settings]':
+    settings = Settings.load()
+    ui_provider = UIProvider(
+        warning_prompt, warning_retry_prompt, record_time, credentials_prompt)
+    time_tracking = get_time_tracking_service(
+        auth_provider, ui_provider, settings)
+    assistant = Assistant(time_tracking, ui_provider, settings)
     return assistant, settings
 
+
 try:
-    
     launcher = Launcher(create_dependencies())
     launcher.run_main_window(create_dependencies)
 except Exception as e:
     log.error(e)
-

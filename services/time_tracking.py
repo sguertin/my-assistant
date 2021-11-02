@@ -6,6 +6,7 @@ import json
 import requests
 
 from ..interfaces.authentication import IAuthenticationProvider
+from ..interfaces.assistant import IAssistant
 from ..interfaces.ui import IUIProvider
 from ..models.issues import Issue
 from ..models.jira import JiraResponse
@@ -32,7 +33,7 @@ class JiraService:
         return self.settings.base_url
 
     @property
-    def headers(self) -> dict[str, str]:
+    def headers(self) -> 'dict[str, str]':
         return {
             'Authorization': f'{self.auth_provider.get_auth()}',
             'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ class JiraService:
         }
 
     @property
-    def clean_headers(self) -> dict[str, str]:
+    def clean_headers(self) -> 'dict[str, str]':
         return {
             'Authorization': f'Basic *******',
             'Content-Type': 'application/json',
@@ -65,7 +66,8 @@ class JiraService:
 
     def log_hours(self, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
         if not time_interval:
-            time_interval = timedelta(hours=self.settings.interval_hours, minutes=self.settings.interval_minutes)
+            time_interval = timedelta(
+                hours=self.settings.interval_hours, minutes=self.settings.interval_minutes)
         if not self.auth_provider.get_auth():
             self.log.debug('Credentials not found')
             return JiraResponse(NEEDS_AUTH_CODE, 'Need to reauthenticate with Jira')
@@ -95,7 +97,7 @@ class JiraService:
     def get_url(self, issue_num):
         return f'{self.base_url}/rest/api/2/issue/{issue_num}/worklog'
 
-    def issue_exists(self, issue_num: str) -> tuple[bool, int]:
+    def issue_exists(self, issue_num: str) -> 'tuple[bool, int]':
         url = f'{self.base_url}/rest/api/2/issue/{issue_num}'
         self.log.debug(f'GET({url}, headers={self.clean_headers})')
         response = requests.get(url, headers=self.headers)
@@ -103,27 +105,25 @@ class JiraService:
         return response.status_code == 200, response.status_code
 
 
-class MockJiraService(JiraService):
+class MockTimeTrackingService(IAssistant):
+    auth: str
+    settings: Settings
 
     def __init__(self, auth: str, settings: Settings):
         self.auth = auth
-        self.log = logging.getLogger('MockJiraService')
-        self.log = settings.log_level
-
-    def try_log_work(self, issue: Issue, comment: str, time_interval: timedelta=None) -> None:
+        self.settings = settings
         pass
-    
-    def log_hours(self, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
-        return JiraResponse(201, 'This is a fake Jira Response!')
 
-    def issue_exists(self, issue_num: str) -> tuple[bool, int]:
-        return True, 200
+    def try_log_work(self, issue: Issue, comment: str, time_interval: timedelta = None) -> None:
+        pass
 
-def get_jira_service(auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings):
+
+def get_time_tracking_service(auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings):
     if settings.enable_jira:
         return JiraService(auth_provider, ui_provider, settings)
     else:
-        return MockJiraService('', settings)
+        return MockTimeTrackingService('', settings)
+
 
 def debug_log_hours(jira_service: JiraService, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
     if time_interval is None:

@@ -3,11 +3,12 @@ from typing import Callable
 
 import PySimpleGUI as sg
 
-from ..services.assistant import Assistant
-from ..models.settings import Settings
 from .issues import manage_issues
-from .theme_browser import manage_theme
-from .settings import change_settings
+from ..models.settings import Settings
+from services.assistant import Assistant
+from ui.settings import change_settings
+from ui.theme_browser import manage_theme
+
 
 class Launcher:
     assistant: Assistant
@@ -17,7 +18,7 @@ class Launcher:
         self.assistant = assistant
         self.settings = settings
 
-    def run_main_window(self, factory: Callable[[], tuple[Assistant,Settings]]) -> None:
+    def run_main_window(self, factory: Callable[[], 'tuple[Assistant, Settings]']) -> None:
         window = sg.Window(f'Time Tracking Assistant', [
             [
                 [sg.Button('Record Time Now', key='Record')],
@@ -34,14 +35,14 @@ class Launcher:
             elif event == 'Issues':
                 manage_issues()
             elif event == 'Settings':
-                self.settings = change_settings(self.settings)
+                change_settings(self.settings)
             elif event == 'Theme':
-                self.settings = manage_theme(self.settings)
+                manage_theme(self.settings)
             elif event == 'Close':
                 window.close()
                 break
             if event in ('Settings', 'Theme'):
-                assistant, settings = factory()
+                assistant, settings = factory()  # Regenerate dependencies
                 self.assistant = assistant
                 self.settings = settings
-            self.assistant.run()            
+            self.assistant.run()

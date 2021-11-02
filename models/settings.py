@@ -4,7 +4,7 @@ import logging
 
 from dataclasses_json import dataclass_json, LetterCase
 
-from ..constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
+from constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -51,7 +51,7 @@ class Settings:
         Returns:
             timedelta: time between start_time and end_time
         """
-        return self.end_time - self.start_time    
+        return self.end_time - self.start_time
 
     def validate(self) -> list[str]:
         """Validates if the settings provided are valid
