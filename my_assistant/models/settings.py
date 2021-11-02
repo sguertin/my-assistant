@@ -1,10 +1,14 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta, datetime
 import logging
 
 from dataclasses_json import dataclass_json, LetterCase
 
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
+
+
+def default_days() -> list[int]:
+    return [0, 1, 2, 3, 4]
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -20,7 +24,7 @@ class Settings:
     interval_minutes: int = 0
     enable_jira: bool = True
     log_level: int = logging.INFO
-    days_of_week: list[int] = [0, 1, 2, 3, 4]
+    days_of_week: list[int] = field(default_factory=default_days)
 
     @property
     def time_interval(self) -> timedelta:
@@ -95,7 +99,7 @@ class Settings:
         if not SETTINGS_FILE.exists():
             return cls.restore_defaults()
         with open(SETTINGS_FILE, 'r') as f:
-            cls.from_json(f.read())
+            return cls.from_json(f.read())
 
     def save(self):
         """Saves current settings to configuration file
