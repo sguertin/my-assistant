@@ -4,7 +4,7 @@ import logging
 
 from dataclasses_json import dataclass_json, LetterCase
 
-from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
+from constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)

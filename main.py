@@ -2,17 +2,17 @@ import logging
 import logging.config
 from os import mkdir
 
-from providers.authentication import BasicAuthenticationProvider
-from providers.ui import UIProvider
+from my_assistant.providers.authentication import BasicAuthenticationProvider
+from my_assistant.providers.ui import UIProvider
 
-from constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE
-from models.settings import Settings
-from services.assistant import Assistant
-from services.time_tracking import get_time_tracking_service
-from ui.warning import warning_prompt, warning_retry_prompt
-from ui.credentials import credentials_prompt
-from ui.time_tracking import record_time
-from ui.launcher import Launcher
+from my_assistant.constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE
+from my_assistant.models.settings import Settings
+from my_assistant.services.assistant import Assistant
+from my_assistant.services.time_tracking import get_time_tracking_service
+from my_assistant.ui.warning import warning_prompt, warning_retry_prompt
+from my_assistant.ui.credentials import credentials_prompt
+from my_assistant.ui.time_tracking import record_time
+from my_assistant.ui.launcher import Launcher
 
 
 logging.basicConfig(

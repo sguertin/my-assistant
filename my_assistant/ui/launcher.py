@@ -3,8 +3,8 @@ from typing import Callable
 
 import PySimpleGUI as sg
 
-from .issues import manage_issues
-from ..models.settings import Settings
+from ui.issues import manage_issues
+from models.settings import Settings
 from services.assistant import Assistant
 from ui.settings import change_settings
 from ui.theme_browser import manage_theme
