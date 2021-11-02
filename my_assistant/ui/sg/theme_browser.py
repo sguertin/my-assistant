@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 from my_assistant.models.settings import Settings
 
 
-def manage_theme(settings: Settings):
+def manage_theme(settings: Settings) -> Settings:
     layout = [
         [sg.Text('Theme Browser')],
         [sg.Text('Click a Theme color to see demo window')],

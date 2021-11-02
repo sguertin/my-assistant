@@ -3,12 +3,12 @@ import logging
 import PySimpleGUI as sg
 
 from my_assistant.models.settings import Settings
-from my_assistant.ui.warning import warning_prompt
+from my_assistant.ui.sg.warning import warning_prompt
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
 
 
 def change_settings(settings: Settings):
-    original_settings = Settings.from_dict(settings.to_dict())
+    original_settings: Settings = Settings.from_dict(settings.to_dict())
     day_checkboxes = []
     for day in DAYS_OF_WEEK.keys():
         day_checkboxes.append(sg.Checkbox(

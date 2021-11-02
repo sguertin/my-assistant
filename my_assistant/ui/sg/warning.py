@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 
-def warning_ok_cancel_prompt(msg: str):
+def warning_ok_cancel_prompt(msg: str) -> bool:
     event, _ = sg.Window(f'Time Tracking - WARNING', [
         [sg.T(msg)],
         [sg.Button('Proceed', bind_return_key=True), sg.Cancel()]

@@ -1,13 +1,14 @@
 from datetime import datetime
+from typing import Callable
 
 import PySimpleGUI as sg
 
-from models.issues import Issue
-from services.issues import get_issues_list
-from issues import manage_issues
+from my_assistant.models.issues import Issue
+from my_assistant.services.issues import get_issues_list
+from my_assistant.ui.sg.issues import manage_issues
 
 
-def record_time(timestamp: datetime) -> tuple[Issue, str]:
+def record_time(timestamp: datetime, handle_update_issues: Callable[[], list[Issue]]) -> tuple[Issue, str]:
     entries = get_issues_list()
     combo = sg.Combo(entries, key='-ENTRY-')
     window = sg.Window(f'Time Tracking', [
@@ -29,6 +30,7 @@ def record_time(timestamp: datetime) -> tuple[Issue, str]:
             window.close()
             return None, None
         elif event == 'ManageIssues':
-            manage_issues(combo)
+            new_issues = handle_update_issues()
+            combo.Update(new_issues)
 
         window.refresh()
