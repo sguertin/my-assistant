@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, date, time
 from pathlib import Path
 
-from constants import WORKING_DIR
-from models.taskfile import TimeDayLog, TimeEntry
+from my_assistant.constants import WORKING_DIR
+from my_assistant.models.taskfile import TimeDayLog, TimeEntry
 
 
 def get_time_log_path(timestamp: datetime) -> Path:

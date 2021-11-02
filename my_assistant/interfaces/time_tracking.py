@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from models.issues import Issue
+from my_assistant.models.issues import Issue
 
 
 class ITimeTrackingService:

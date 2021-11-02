@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable, Any
 
-from models.issues import Issue
+from my_assistant.models.issues import Issue
 
 
 class UIProvider:

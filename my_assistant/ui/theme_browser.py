@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-from models.settings import Settings
+from my_assistant.models.settings import Settings
 
 
 def manage_theme(settings: Settings):

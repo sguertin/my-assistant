@@ -1,5 +1,5 @@
-from constants import ISSUES_LIST, DELETED_ISSUES_LIST
-from models.issues import Issue
+from my_assistant.constants import ISSUES_LIST, DELETED_ISSUES_LIST
+from my_assistant.models.issues import Issue
 
 
 def get_issues_list() -> 'list[Issue]':

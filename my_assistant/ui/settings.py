@@ -2,9 +2,9 @@ import logging
 
 import PySimpleGUI as sg
 
-from models.settings import Settings
-from ui.warning import warning_prompt
-from constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
+from my_assistant.models.settings import Settings
+from my_assistant.ui.warning import warning_prompt
+from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
 
 
 def change_settings(settings: Settings):

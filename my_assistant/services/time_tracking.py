@@ -5,12 +5,12 @@ import json
 
 import requests
 
-from interfaces.authentication import IAuthenticationProvider
-from interfaces.assistant import IAssistant
-from interfaces.ui import IUIProvider
-from models.issues import Issue
-from models.jira import JiraResponse
-from models.settings import Settings
+from my_assistant.interfaces.authentication import IAuthenticationProvider
+from my_assistant.interfaces.assistant import IAssistant
+from my_assistant.interfaces.ui import IUIProvider
+from my_assistant.models.issues import Issue
+from my_assistant.models.jira import JiraResponse
+from my_assistant.models.settings import Settings
 
 NEEDS_AUTH_CODE = 901
 FAILED_AUTH = 403

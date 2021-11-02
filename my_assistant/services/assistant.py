@@ -5,12 +5,12 @@ import logging.config
 
 import PySimpleGUI as sg
 
-from services.issues import get_issues_list
-from services.taskfile import create_tracking_entry, get_last_entry_time
+from my_assistant.services.issues import get_issues_list
+from my_assistant.services.taskfile import create_tracking_entry, get_last_entry_time
 
-from interfaces.time_tracking import ITimeTrackingService
-from interfaces.ui import IUIProvider
-from models.settings import Settings
+from my_assistant.interfaces.time_tracking import ITimeTrackingService
+from my_assistant.interfaces.ui import IUIProvider
+from my_assistant.models.settings import Settings
 
 
 class Assistant:

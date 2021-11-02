@@ -3,11 +3,11 @@ from typing import Callable
 
 import PySimpleGUI as sg
 
-from ui.issues import manage_issues
-from models.settings import Settings
-from services.assistant import Assistant
-from ui.settings import change_settings
-from ui.theme_browser import manage_theme
+from my_assistant.ui.issues import manage_issues
+from my_assistant.models.settings import Settings
+from my_assistant.services.assistant import Assistant
+from my_assistant.ui.settings import change_settings
+from my_assistant.ui.theme_browser import manage_theme
 
 
 class Launcher:

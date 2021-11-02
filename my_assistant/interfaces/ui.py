@@ -1,5 +1,5 @@
 from datetime import datetime
-from ..models.issues import Issue
+from my_assistant.models.issues import Issue
 
 
 class IUIProvider:
@@ -22,7 +22,7 @@ class IUIProvider:
         """
         pass
 
-    def record_time(self, timestamp: datetime) ->' tuple[Issue, str]':
+    def record_time(self, timestamp: datetime) -> ' tuple[Issue, str]':
         """Creates a prompt to capture time worked
 
         Args:

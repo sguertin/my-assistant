@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from interfaces.time_tracking import ITimeTrackingService
-from models.settings import Settings
+from my_assistant.interfaces.time_tracking import ITimeTrackingService
+from my_assistant.models.settings import Settings
 
 
 class IAssistant:
