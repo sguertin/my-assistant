@@ -1,9 +1,15 @@
 import base64
 
-class BasicAuthenticationProvider:
-    _auth: bytes = None
+from my_assistant.interfaces.authentication import IAuthenticationProvider
 
-    def clear_auth(self)->None:
+
+class BasicAuthenticationProvider(IAuthenticationProvider):
+    _auth: bytes
+
+    def __init__(self):
+        self._auth = None
+
+    def clear_auth(self) -> None:
         self._auth = None
 
     def get_auth(self) -> str:
@@ -12,5 +18,5 @@ class BasicAuthenticationProvider:
         return None
 
     def set_auth(self, user_name: str, password: str):
-        encoding = base64.b64encode(f'{user_name}:{password}'.encode('utf-8'))    
-        self._auth = encoding        
+        encoding = base64.b64encode(f'{user_name}:{password}'.encode('utf-8'))
+        self._auth = encoding
