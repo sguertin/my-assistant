@@ -1,10 +1,9 @@
-import logging
-
 import PySimpleGUI as sg
 
 from my_assistant.models.settings import Settings
 from my_assistant.ui.sg.warning import warning_prompt
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
+from my_assistant.events import SAVE_EVENT, CANCEL_EVENT, CLOSE_EVENTS
 
 
 def change_settings(settings: Settings):
@@ -24,20 +23,15 @@ def change_settings(settings: Settings):
          sg.T('h '), sg.Combo(['00', '15', '30', '45'], key='interval_minutes'), sg.T('m')],
         [sg.Checkbox('Enable Jira', key='enable_jira')],
         day_checkboxes,
-        [sg.Submit('Save'), sg.Button('Cancel')],
+        [sg.Submit('Save', key=SAVE_EVENT), sg.Button(
+            'Cancel', key=CANCEL_EVENT)],
     ])
     while True:
         event, values = window.read()
-        if event in ['Submit', 'Save']:
+        if event == SAVE_EVENT:
             settings = create_new_settings(values, settings.theme)
-            errors = settings.validate()
-            if not errors == 0:
-                settings.save()
-                window.close()
-                return settings
-            else:
-                warning_prompt('\n'.join(errors))
-        elif event in ('Cancel', sg.WINDOW_CLOSED):
+            return settings
+        elif event in CLOSE_EVENTS:
             window.close()
             return original_settings
 
@@ -53,5 +47,5 @@ def create_new_settings(values, theme) -> Settings:
         int(values['interval_hours']), int(values['interval_minutes']),
         values['enable_jira'],
         LOGGING_LEVELS[values['log_level']],
-        [value for day, value in DAYS_OF_WEEK.items() if values[day]],
+        frozenset(value for day, value in DAYS_OF_WEEK.items() if values[day]),
     )

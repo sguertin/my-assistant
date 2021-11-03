@@ -8,9 +8,10 @@ from my_assistant.models.issues import Issue
 ISSUE_KEY: str = '-ISSUE-'
 DESCRIPTION_KEY: str = '-DESCRIPTION-'
 ACTIVE_ISSUES_KEY: str = '-ACTIVE ISSUES-'
+INACTIVE_ISSUES_KEY: str = '-INACTIVE ISSUES-'
 
 
-def get_issue_info(self, event_handler: Callable[[str, str, str], bool]) -> None:
+def get_issue_info(self, event_handler: Callable[[str, str, str], str]) -> None:
     """Creates UI control to capture issue information and add to list
 
     Args:
@@ -34,30 +35,32 @@ def get_issue_info(self, event_handler: Callable[[str, str, str], bool]) -> None
         ]
     ])
     event = START_UP_EVENT
-    while True:
-        if event in CLOSE_EVENTS:
-            window.close()
-            break
+    while event not in CLOSE_EVENTS:
+        if event != START_UP_EVENT:
+            result_field.update(event, visible=True)
+            window.refresh()
         event, values = window.read()
-        result = event_handler(
-            event, values[ISSUE_KEY], values[DESCRIPTION_KEY])
+        event = event_handler(
+            event,
+            values[ISSUE_KEY],
+            values[DESCRIPTION_KEY]
+        )
         issue_field.Update('', select=True)
         desc_field.Update('')
 
-        if result not in CLOSE_EVENT:
-            result_field.update(result, visible=True)
-            window.refresh()
+    window.close()
 
 
-def manage_issues(self, issues: list[Issue],
+def manage_issues(self,
+                  issues: list[Issue],
                   deleted_issues: list[Issue],
-                  event_handler: Callable[[str, dict], tuple[list[Issue], list[Issue]]]) -> list[Issue]:
-    active_list_box = sg.Listbox(issues, key='ActiveIssues', size=(30, 40))
+                  event_handler: Callable[[str, list[Issue], list[Issue]], tuple[list[Issue], list[Issue]]]) -> list[Issue]:
+    active_list_box = sg.Listbox(issues, key=ACTIVE_ISSUES_KEY, size=(30, 40))
     deleted_list_box = sg.Listbox(
-        deleted_issues, key='DeletedIssues', size=(30, 40))
+        deleted_issues, key=INACTIVE_ISSUES_KEY, size=(30, 40))
     window = sg.Window(f'Time Tracking - Manage Issues', [
         [sg.T('Active Issues', size=(30, 1)), sg.T('', size=(5, 1)),
-         sg.T('Deleted Issues', size=(30, 1))],
+         sg.T('Inactive Issues', size=(30, 1))],
         [  # CLOSE_EVENTS, SAVE_EVENT, ANOTHER_EVENT, RESTORE_EVENT
             active_list_box,
             sg.Frame('', [
@@ -77,7 +80,8 @@ def manage_issues(self, issues: list[Issue],
     ], size=(550, 775))
     while True:
         event, values = window.read()
-        issues, deleted_issues = event_handler(event, values)
+        issues = event_handler(
+            event, values[ACTIVE_ISSUES_KEY], values[INACTIVE_ISSUES_KEY])
         if not issues:
             window.close()
             break
