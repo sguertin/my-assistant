@@ -118,13 +118,6 @@ class MockTimeTrackingService(IAssistant):
         pass
 
 
-def get_time_tracking_service(auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings):
-    if settings.enable_jira:
-        return JiraService(auth_provider, ui_provider, settings)
-    else:
-        return MockTimeTrackingService('', settings)
-
-
 def debug_log_hours(jira_service: JiraService, issue_num: str, comment: str = None, time_interval: timedelta = None) -> JiraResponse:
     if time_interval is None:
         time_interval = timedelta(hours=1)
