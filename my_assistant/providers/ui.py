@@ -3,9 +3,6 @@ from typing import Callable, Any
 
 from my_assistant.interfaces.ui import IUIProvider
 
-from my_assistant.models.issues import Issue
-from my_assistant.models.settings import Settings
-
 from my_assistant.ui.sg.credentials import credentials_prompt
 from my_assistant.ui.sg.issues import manage_issues, get_issue_info
 from my_assistant.ui.sg.settings import change_settings

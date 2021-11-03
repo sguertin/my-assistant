@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Optional
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.authentication import IAuthenticationProvider
@@ -25,7 +25,7 @@ class Factory:
             settings = Settings.load()
         self.settings = settings
 
-    def create_launcher_dependencies(self, settings: Settings = None) -> tuple[IAssistant, IUIProvider]:
+    def create_launcher_dependencies(self, settings: Optional[Settings] = None) -> tuple[IAssistant, IUIProvider]:
         if settings is None:
             settings = self.settings
 
