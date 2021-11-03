@@ -108,12 +108,12 @@ class IUIProvider:
         """
         raise NotImplementedError("warning_retry_prompt is not implemented")
 
-    def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
+    def record_time(self, timestamp: datetime, handle_update_issues: Callable[[], list[Issue]]) -> tuple[Issue, str]:
         """Creates a prompt to capture time worked
 
         Args:
             timestamp (datetime): The timestamp for the time recording
-
+            handle_update_issues (Callable[[], list[Issue]]): function to invoke to manage issues list
         Returns:
             tuple[Issue, str]: the issue and a comment
         """

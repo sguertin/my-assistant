@@ -17,6 +17,17 @@ class IAssistant:
             IIssueService: Service for managing issues
             Settings: Application configuration state
     """
+    @staticmethod
+    def validate_settings(settings: Settings) -> list[str]:
+        """Verifies the settings provided are in a valid state
+
+        Args:
+            settings (Settings): the settings to be validated
+
+        Returns:
+            list[str]: A list of any errors found during validation
+        """
+        raise NotImplementedError("validate_settings is not implemented")
 
     def __init__(self, *args):
         raise TypeError("Interface IAssistant cannot be initialized")
