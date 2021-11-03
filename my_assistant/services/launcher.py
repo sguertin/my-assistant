@@ -1,6 +1,7 @@
 from datetime import datetime
 import logging
 from typing import Callable, Optional
+from my_assistant.constants import LOGGING_LEVELS
 
 from my_assistant.events import CLOSE_EVENTS, ISSUES_EVENT, RECORD_EVENT, SETTINGS_EVENT, THEME_EVENT
 from my_assistant.interfaces.assistant import IAssistant
@@ -47,7 +48,8 @@ class LauncherService(ILauncherService):
             self.ui_provider.manage_issues()
         elif event in (SETTINGS_EVENT, THEME_EVENT):
             if event == SETTINGS_EVENT:
-                self.settings = self.ui_provider.change_settings(self.settings)
+                self.settings = self.ui_provider.change_settings(
+                    self.settings, self.create_new_settings)
             elif event == THEME_EVENT:
                 self.settings = self.ui_provider.manage_theme(self.settings)
             assistant, ui_provider = self.factory(
@@ -58,3 +60,15 @@ class LauncherService(ILauncherService):
             return False
         self.assistant.run()
         return True
+
+    def create_new_settings(values: dict[str, str], theme: str, days_of_week: frozenset[int]) -> Settings:
+        return Settings(
+            theme,
+            values['base_url'],
+            int(values['start_hour']), int(values['start_minute']),
+            int(values['end_hour']), int(values['end_minute']),
+            int(values['interval_hours']), int(values['interval_minutes']),
+            values['enable_jira'],
+            LOGGING_LEVELS[values['log_level']],
+            days_of_week,
+        )

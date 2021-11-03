@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 import logging
 from logging import Logger
-from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE
+from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, LOGGING_LEVELS, DAYS_OF_WEEK
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService

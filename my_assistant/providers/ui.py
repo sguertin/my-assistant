@@ -12,7 +12,7 @@ from my_assistant.ui.sg.warning import warning_ok_cancel_prompt, warning_prompt,
 
 
 class UIProvider(IUIProvider):
-    def __init__(self):
+    def __init__(self: IUIProvider):
         self.change_settings = change_settings
         self.warning_prompt = warning_prompt
         self.record_time = record_time

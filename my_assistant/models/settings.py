@@ -21,7 +21,7 @@ class Settings:
     enable_jira: bool = True
     log_level: int = logging.INFO
     days_of_week: frozenset[int] = field(
-        default_factory=lambda: frozenset(0, 1, 2, 3, 4))
+        default_factory=lambda: frozenset({0, 1, 2, 3, 4}))
 
     @property
     def time_interval(self) -> timedelta:
@@ -48,10 +48,16 @@ class Settings:
         Returns:
             Settings: Returns the settings in the save file
         """
+        log = logging.getLogger('Settings')
+        log.setLevel(logging.ERROR)
         if not SETTINGS_FILE.exists():
             return cls.restore_defaults()
-        with open(SETTINGS_FILE, 'r') as f:
-            return cls.from_json(f.read())
+        try:
+            with open(SETTINGS_FILE, 'r') as f:
+                return cls.from_json(f.read())
+        except Exception as e:
+            log.exception(e)
+            return cls.restore_defaults()
 
     def save(self) -> None:
         """Saves current settings to configuration file

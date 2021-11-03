@@ -1,3 +1,4 @@
+import logging
 from typing import Callable
 
 import PySimpleGUI as sg
@@ -16,6 +17,7 @@ def create_launcher_ui(self, theme, handler: Callable[[str, str], bool]) -> None
             [sg.Button('Close', key=CLOSE_EVENT)],
         ]
     ], size=(300, 200))
+    # log.debug(f'WINDOW DIMENSIONS : WIDTH={width} HEIGHT={height} ')
     event = START_UP_EVENT
     while handler(event):
         event, _ = window.read(timeout=5000)

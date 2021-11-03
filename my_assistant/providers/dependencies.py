@@ -105,7 +105,10 @@ class Factory:
             settings = self.settings
         return TaskFileService(settings)
 
-    def get_time_tracking_service(self, auth_provider: IAuthenticationProvider, ui_provider: IUIProvider, settings: Settings = None) -> ITimeTrackingService:
+    def get_time_tracking_service(self,
+                                  auth_provider: IAuthenticationProvider,
+                                  ui_provider: IUIProvider,
+                                  settings: Settings = None) -> ITimeTrackingService:
         """Returns an initialized instance of ITimeTrackingService
 
         Args:
@@ -114,7 +117,7 @@ class Factory:
             settings (Settings): [description]
 
         Returns:
-            [type]: [description]
+            ITimeTrackingService: initialized ITimeTrackingService
         """
         if settings is None:
             settings = self.settings
@@ -127,6 +130,6 @@ class Factory:
         """Returns an initialized instance of IUIProvider
 
         Returns:
-            IUIProvider: [description]
+            IUIProvider: the initialized IUIProvider
         """
         return UIProvider()
