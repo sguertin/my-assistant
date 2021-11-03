@@ -43,20 +43,33 @@ class Factory:
         return BasicAuthenticationProvider()
 
     def get_launcher_service(self,
-                             assistant: IAssistant,
-                             ui_provider: IUIProvider,
-                             settings: Settings = None) -> ILauncherService:
+                             assistant: Optional[IAssistant] = None,
+                             ui_provider: Optional[IUIProvider] = None,
+                             settings: Optional[Settings] = None) -> ILauncherService:
         """Returns initialized instance of ILauncherService
 
         Args:
-            assistant (IAssistant): [description]
-            ui_provider (IUIProvider): [description]
-            settings (Settings): [description]
-            create_dependencies (Callable[[], None]): [description]
+            assistant (Optional[IAssistant], optional): [description]. Defaults to None.
+            ui_provider (Optional[IUIProvider], optional): [description]. Defaults to None.
+            settings (Optional[Settings], optional): [description]. Defaults to None.
 
         Returns:
-            [type]: [description]
+            ILauncherService: the initialized launcher service
         """
+        default_ui_provider = None
+        if settings is None:
+            settings = self.settings
+
+        if assistant is None:
+            assistant, default_ui_provider = self.create_launcher_dependencies(
+                settings)
+
+        if ui_provider is None:
+            if default_ui_provider is None:
+                _, ui_provider = self.create_launcher_dependencies(settings)
+            else:
+                ui_provider = default_ui_provider
+
         return LauncherService(assistant, ui_provider, settings, self.create_launcher_dependencies)
 
     def get_assistant(self,
