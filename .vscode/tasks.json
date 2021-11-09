@@ -7,40 +7,79 @@
             "label": "Run with Python 3.9",
             "type": "shell",
             "command": "build/scripts/Run-Application.ps1",
-            "options": { "shell": { "executable": "pwsh.exe", "args": [] } },
             "windows": {
-                "command": "build\\scripts\\Run-Application.ps1",
-                "args": ["-Legacy"]
+                "command": ".\\build\\scripts\\Run-Application.ps1",
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                        "args": [
+                            "-ExecutionPolicy",
+                            "Bypass",
+                            "-NoLogo",
+                            "-NoExit"
+                        ]
+                    }
+                }
             },
             "args": ["-Legacy"]
         },
         {
             "label": "Run with Python 3.10",
             "type": "shell",
-            "options": { "shell": { "executable": "pwsh.exe", "args": [] } },
             "command": "build/scripts/Run-Application.ps1",
             "windows": {
-                "command": "build\\scripts\\Run-Application.ps1"
+                "command": "build\\scripts\\Run-Application.ps1",
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                        "args": [
+                            "-ExecutionPolicy",
+                            "Bypass",
+                            "-NoLogo",
+                            "-NoExit"
+                        ]
+                    }
+                }
             }
         },
         {
             "label": "Build with Python 3.9",
             "type": "shell",
-            "options": { "shell": { "executable": "pwsh.exe", "args": [] } },
             "command": "build/Create-AssistantExe.ps1",
             "windows": {
                 "command": "build\\scripts\\Create-AssistantExe.ps1",
-                "args": ["-Legacy"]
+                "args": ["-Legacy"],
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                        "args": [
+                            "-ExecutionPolicy",
+                            "Bypass",
+                            "-NoLogo",
+                            "-NoExit"
+                        ]
+                    }
+                }
             },
             "args": ["-Legacy"]
         },
         {
             "label": "Build with Python 3.10",
             "type": "shell",
-            "options": { "shell": { "executable": "pwsh.exe", "args": [] } },
-            "command": "& build/Create-AssistantExe.ps1",
+            "command": "build/Create-AssistantExe.ps1",
             "windows": {
-                "command": "build\\scripts\\Create-AssistantExe.ps1"
+                "command": "build\\scripts\\Create-AssistantExe.ps1",
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                        "args": [
+                            "-ExecutionPolicy",
+                            "Bypass",
+                            "-NoLogo",
+                            "-NoExit"
+                        ]
+                    }
+                }
             },
             "problemMatcher": [],
             "group": {
