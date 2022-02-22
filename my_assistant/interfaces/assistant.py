@@ -36,6 +36,3 @@ class IAssistant:
             datetime: the next time it will take a record
         """
         pass
-
-
-asst = IAssistant()

@@ -53,7 +53,8 @@ def create_dependencies() -> 'tuple[Assistant, Settings]':
 
 
 try:
-    launcher = Launcher(create_dependencies())
+    assistant, settings = create_dependencies()
+    launcher = Launcher(assistant, settings)
     launcher.run_main_window(create_dependencies)
 except Exception as e:
     log.error(e)

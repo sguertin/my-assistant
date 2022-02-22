@@ -2,9 +2,9 @@ from datetime import datetime
 
 import PySimpleGUI as sg
 
-from models.issues import Issue
-from services.issues import get_issues_list
-from issues import manage_issues
+from my_assistant.models.issues import Issue
+from my_assistant.services.issues import get_issues_list
+from my_assistant.ui.issues import manage_issues
 
 
 def record_time(timestamp: datetime) -> tuple[Issue, str]:

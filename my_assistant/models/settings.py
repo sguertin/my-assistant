@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta, datetime
 import logging
 
@@ -20,7 +20,8 @@ class Settings:
     interval_minutes: int = 0
     enable_jira: bool = True
     log_level: int = logging.INFO
-    days_of_week: list[int] = [0, 1, 2, 3, 4]
+    days_of_week: frozenset[int] = field(
+        default_factory=lambda: frozenset({0, 1, 2, 3, 4}))
 
     @property
     def time_interval(self) -> timedelta:
@@ -95,7 +96,7 @@ class Settings:
         if not SETTINGS_FILE.exists():
             return cls.restore_defaults()
         with open(SETTINGS_FILE, 'r') as f:
-            cls.from_json(f.read())
+            return cls.from_json(f.read())
 
     def save(self):
         """Saves current settings to configuration file
