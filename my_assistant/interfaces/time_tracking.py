@@ -1,11 +1,10 @@
 from datetime import timedelta
 
+from my_assistant.interfaces.base import Interface
 from my_assistant.models.issues import Issue
 
 
-class ITimeTrackingService:
-    def __init__(self):
-        raise TypeError('Cannot initialize an interface!')
+class ITimeTrackingService(Interface):
 
     def try_log_work(self, workitem: Issue, comment: str = None, time_interval: timedelta = None) -> None:
         """Attempts to make a time entry for a standard interval of work

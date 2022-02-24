@@ -1,10 +1,8 @@
 from datetime import datetime
-
-from my_assistant.interfaces.time_tracking import ITimeTrackingService
-from my_assistant.models.settings import Settings
+from my_assistant.interfaces.base import Interface
 
 
-class IAssistant:
+class IAssistant(Interface):
     """interface IAssistant - Assistant Service for handling decision making on time recording activities
 
         Dependencies:
@@ -12,14 +10,39 @@ class IAssistant:
             Settings: Application configuration state
     """
 
-    def __init__(self, time_tracking: ITimeTrackingService, settings: Settings):
-        """Initializes the Assistant
+    @staticmethod
+    def is_workday(date: datetime) -> bool:
+        """Checks if the date provided is a workday
 
         Args:
-            time_tracking (ITimeTrackingService): The Service that will handle logging work entries
-            settings (Settings): The application settings
+            date (datetime): The date to check for being a workday
+
+        Returns:
+            bool: True if the date is a workday
         """
-        raise TypeError("Interface cannot be initialized")
+        pass
+
+    def is_work_time(self, time_of_day: datetime = None) -> bool:
+        """Determines if a given time is a work time
+
+        Args:
+            time_of_day (datetime, optional): The time of day that needs to be determined if it's during work hours. Defaults to None.
+
+        Returns:
+            bool: True if time_of_day is within work hours
+        """
+        pass
+
+    def is_workhour(self, date: datetime = None) -> bool:
+        """Determines if the given time (now by default) is within working hours
+
+        Args:
+            time_of_day (datetime, optional): The time of day that needs to be determined if it's during work hours. Defaults to None.
+
+        Returns:
+            bool: True if time_of_day is within work hours
+        """
+        pass
 
     def run(self) -> None:
         """Runs to test if it's time to record a new entry and record the new entry if so

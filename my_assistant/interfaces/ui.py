@@ -1,8 +1,10 @@
 from datetime import datetime
+
+from my_assistant.interfaces.base import Interface
 from my_assistant.models.issues import Issue
 
 
-class IUIProvider:
+class IUIProvider(Interface):
     def warning_retry_prompt(self, msg: str) -> bool:
         """Gives a warning prompt to the user with a request to retry
 
