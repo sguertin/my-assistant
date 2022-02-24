@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
-import logging
+from logging import INFO
 
 from dataclasses_json import dataclass_json, LetterCase
 
@@ -19,7 +19,7 @@ class Settings:
     interval_hours: int = 1
     interval_minutes: int = 0
     enable_jira: bool = True
-    log_level: int = logging.INFO
+    log_level: int = INFO
     days_of_week: list[int] = [0, 1, 2, 3, 4]
 
     @property
