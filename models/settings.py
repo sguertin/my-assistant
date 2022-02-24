@@ -75,8 +75,10 @@ class Settings:
         if self.interval_hours == 0 and self.interval_minutes == 0:
             error_list.append(f'No time interval specified')
         if self.work_day < self.time_interval:
-            error_list.append(f'Entire workday [{self.start_hour:02d}:{self.start_minute:02d}] - [{self.end_hour:02d}:{self.end_minute:02d}] = {self.work_day.hours}h {self.work_day.minutes}' +
-                              f'is less than time recording interval: [{self.interval_hours}:{self.interval_minutes}]')
+            error_list.append(
+                f'Entire workday [{self.start_hour:02d}:{self.start_minute:02d}] - [{self.end_hour:02d}:{self.end_minute:02d}] = ' +
+                f'{self.work_day.hours}h {self.work_day.minutes}' +
+                f'is less than time recording interval: [{self.interval_hours}:{self.interval_minutes}]')
         return error_list
 
     @classmethod
@@ -91,11 +93,16 @@ class Settings:
         return settings
 
     @classmethod
-    def load(cls):
+    def load(cls) -> 'Settings':
+        """Loads the settings from the file system (creates new default settings if no file exists)
+
+        Returns:
+            Settings: The application settings
+        """
         if not SETTINGS_FILE.exists():
             return cls.restore_defaults()
         with open(SETTINGS_FILE, 'r') as f:
-            cls.from_json(f.read())
+            return cls.from_json(f.read())
 
     def save(self):
         """Saves current settings to configuration file
