@@ -2,23 +2,22 @@ from datetime import datetime
 from typing import Callable
 
 import PySimpleGUI as sg
-
-from my_assistant.ui.issues import manage_issues
+from my_assistant.interfaces.assistant import IAssistant
+from my_assistant.interfaces.ui import IUIProvider
 from my_assistant.models.settings import Settings
-from my_assistant.services.assistant import Assistant
-from my_assistant.ui.settings import change_settings
-from my_assistant.ui.theme_browser import manage_theme
 
 
-class Launcher:
-    assistant: Assistant
+class LauncherService:
+    assistant: IAssistant
+    ui_provider: IUIProvider
     settings: Settings
 
-    def __init__(self, assistant: Assistant, settings: Settings):
+    def __init__(self, assistant: IAssistant, ui_provider: IUIProvider, settings: Settings):
         self.assistant = assistant
         self.settings = settings
+        self.ui_provider = ui_provider
 
-    def run_main_window(self, factory: Callable[[], 'tuple[Assistant, Settings]']) -> None:
+    def run_main_window(self, factory: Callable[[], 'tuple[IAssistant, IUIProvider, Settings]']) -> None:
         window = sg.Window(f'Time Tracking Assistant', [
             [
                 [sg.Button('Record Time Now', key='Record')],
@@ -33,16 +32,18 @@ class Launcher:
             if event == 'Record':
                 self.assistant.main_prompt(datetime.now())
             elif event == 'Issues':
-                manage_issues()
+                self.ui_provider.manage_issues()
             elif event == 'Settings':
-                change_settings(self.settings)
+                self.ui_provider.change_settings(self.settings)
             elif event == 'Theme':
-                manage_theme(self.settings)
+                self.ui_provider.manage_theme(self.settings)
             elif event == 'Close':
                 window.close()
                 break
             if event in ('Settings', 'Theme'):
-                assistant, settings = factory()  # Regenerate dependencies
+                assistant, ui_provider, settings = factory()  # Regenerate dependencies
                 self.assistant = assistant
+                self.ui_provider = ui_provider
                 self.settings = settings
+
             self.assistant.run()
