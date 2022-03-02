@@ -1,3 +1,4 @@
+from enum import IntEnum
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG
 from os import getenv
 from pathlib import Path
@@ -26,3 +27,11 @@ LOGGING_LEVELS = {
     'Info': INFO,
     'Debug': DEBUG,
 }
+
+
+class LogLevel(IntEnum):
+    CRITICAL = CRITICAL
+    ERROR = ERROR
+    WARNING = WARNING
+    INFO = INFO
+    DEBUG = DEBUG

@@ -1,9 +1,7 @@
-import logging.config
-from models.logging import LogLevel
 from os import mkdir
 from models.settings import Settings
 
-from my_assistant.constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE
+from my_assistant.constants import WORKING_DIR, ISSUES_LIST, DELETED_ISSUES_LIST, SETTINGS_FILE, LogLevel
 from my_assistant.factories.dependencies import DependencyFactory
 from my_assistant.factories.logging import LoggingFactory
 
