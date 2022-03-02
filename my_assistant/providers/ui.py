@@ -61,3 +61,6 @@ class UIProvider:
 
     def change_settings(self, settings: Settings) -> Settings:
         return self.settings_service.change_settings(settings)
+
+    def set_theme(self, new_theme: str) -> None:
+        self.settings_service.set_theme(new_theme)

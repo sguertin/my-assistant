@@ -13,6 +13,9 @@ class UISettingsService:
     def __init__(self, warning_service: IUIWarningService):
         self.warning_service = warning_service
 
+    def set_theme(self, new_theme) -> None:
+        sg.theme(new_theme)
+
     def create_new_settings(self, values, theme) -> Settings:
         return Settings(
             theme,

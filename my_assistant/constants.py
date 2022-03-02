@@ -1,4 +1,4 @@
-import logging
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG
 from os import getenv
 from pathlib import Path
 
@@ -20,9 +20,9 @@ DAYS_OF_WEEK = {
     'Sunday': 6,
 }
 LOGGING_LEVELS = {
-    'Critical': logging.CRITICAL,
-    'Error': logging.ERROR,
-    'Warning': logging.WARNING,
-    'Info': logging.INFO,
-    'Debug': logging.DEBUG,
+    'Critical': CRITICAL,
+    'Error': ERROR,
+    'Warning': WARNING,
+    'Info': INFO,
+    'Debug': DEBUG,
 }

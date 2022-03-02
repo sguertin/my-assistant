@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from my_assistant.interfaces.base import Interface
 
 
@@ -33,7 +34,7 @@ class IAssistant(Interface):
         """
         pass
 
-    def is_workhour(self, date: datetime = None) -> bool:
+    def is_workhour(self, date: Optional[datetime] = None) -> bool:
         """Determines if the given time (now by default) is within working hours
 
         Args:
@@ -57,5 +58,16 @@ class IAssistant(Interface):
 
         Returns:
             datetime: the next time it will take a record
+        """
+        pass
+
+    def get_next(self, now: Optional[datetime] = None) -> datetime:
+        """Calculates the next time an entry should be recorded
+
+        Args:
+            now (datetime, optional): The time of day to calculate from. Defaults to None.
+
+        Returns:
+            datetime: The next time an entry will need to be taken
         """
         pass

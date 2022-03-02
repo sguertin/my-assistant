@@ -75,6 +75,13 @@ class IUIProvider(Interface):
         """
         pass
 
+    def set_theme(self, new_theme: str) -> None:
+        """Sets the color theme for the UI
+
+        Args:
+            new_theme (str): the new theme set for the UI
+        """
+
 
 class IUIWarningService(Interface):
 
@@ -170,5 +177,13 @@ class IUISettingsService:
 
         Returns:
             Settings: The updated settings
+        """
+        pass
+
+    def set_theme(self, new_theme: str) -> None:
+        """Sets the theme color for the UI
+
+        Args:
+            new_theme (str): the name of the theme being set
         """
         pass

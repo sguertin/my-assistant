@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
-import logging
 
 from dataclasses_json import dataclass_json, LetterCase
 
+from my_assistant.models.logging import LogLevel
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE
 
 
@@ -19,7 +19,7 @@ class Settings:
     interval_hours: int = 1
     interval_minutes: int = 0
     enable_jira: bool = True
-    log_level: int = logging.INFO
+    log_level: LogLevel = LogLevel.INFO
     days_of_week: frozenset[int] = field(
         default_factory=lambda: frozenset({0, 1, 2, 3, 4}))
 
@@ -76,12 +76,15 @@ class Settings:
         if self.interval_hours == 0 and self.interval_minutes == 0:
             error_list.append(f'No time interval specified')
         if self.work_day < self.time_interval:
-            error_list.append(f'Entire workday [{self.start_hour:02d}:{self.start_minute:02d}] - [{self.end_hour:02d}:{self.end_minute:02d}] = {self.work_day.hours}h {self.work_day.minutes}' +
-                              f'is less than time recording interval: [{self.interval_hours}:{self.interval_minutes}]')
+            error_list.append(
+                f'Entire workday [{self.start_hour:02d}:{self.start_minute:02d}] - ' +
+                f'[{self.end_hour:02d}:{self.end_minute:02d}] = {self.work_day.hours}h {self.work_day.minutes}m ' +
+                f'is less than time recording interval: {self.interval_hours}h {self.interval_minutes}m'
+            )
         return error_list
 
     @classmethod
-    def restore_defaults(cls):
+    def restore_defaults(cls) -> 'Settings':
         """Restores the settings to their default
 
             Returns:
@@ -92,13 +95,13 @@ class Settings:
         return settings
 
     @classmethod
-    def load(cls):
+    def load(cls) -> 'Settings':
         if not SETTINGS_FILE.exists():
             return cls.restore_defaults()
         with open(SETTINGS_FILE, 'r') as f:
             return cls.from_json(f.read())
 
-    def save(self):
+    def save(self) -> None:
         """Saves current settings to configuration file
 
         """
