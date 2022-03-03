@@ -10,6 +10,7 @@ TimeTracking
 venv*
 
 build
+!build/scripts
 dist/windows
 
 issues.json
