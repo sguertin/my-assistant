@@ -1,17 +1,29 @@
+from abc import ABCMeta, abstractmethod, abstractstaticmethod
 from datetime import datetime
 from typing import Optional
-from my_assistant.interfaces.base import Interface
 
 
-class IAssistant(Interface):
+class IAssistant(metaclass=ABCMeta):
     """interface IAssistant - Assistant Service for handling decision making on time recording activities
 
-        Dependencies:
-            ITimeTrackingService: Service to handle interactions with Time Tracking Service
-            Settings: Application configuration state
+    Dependencies:
+        ITimeTrackingService: Service to handle interactions with Time Tracking Service
+        Settings: Application configuration state
     """
 
-    @staticmethod
+    @classmethod
+    def __subclasshook__(cls, subclass):
+        return (
+            (hasattr(subclass, "is_workday") and callable(subclass.is_workday))
+            and (hasattr(subclass, "is_work_time") and callable(subclass.is_work_time))
+            and (hasattr(subclass, "is_workhour") and callable(subclass.is_workhour))
+            and (hasattr(subclass, "run") and callable(subclass.run))
+            and (hasattr(subclass, "main_prompt") and callable(subclass.main_prompt))
+            and (hasattr(subclass, "get_next") and callable(subclass.get_next))
+            or NotImplemented
+        )
+
+    @abstractstaticmethod
     def is_workday(date: datetime) -> bool:
         """Checks if the date provided is a workday
 
@@ -21,8 +33,9 @@ class IAssistant(Interface):
         Returns:
             bool: True if the date is a workday
         """
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def is_work_time(self, time_of_day: datetime = None) -> bool:
         """Determines if a given time is a work time
 
@@ -32,8 +45,9 @@ class IAssistant(Interface):
         Returns:
             bool: True if time_of_day is within work hours
         """
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def is_workhour(self, date: Optional[datetime] = None) -> bool:
         """Determines if the given time (now by default) is within working hours
 
@@ -43,13 +57,14 @@ class IAssistant(Interface):
         Returns:
             bool: True if time_of_day is within work hours
         """
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def run(self) -> None:
-        """Runs to test if it's time to record a new entry and record the new entry if so
-        """
+        """Runs to test if it's time to record a new entry and record the new entry if so"""
         pass
 
+    @abstractmethod
     def main_prompt(self, timestamp: datetime) -> datetime:
         """Brings up the Time Entry Prompt for the timestamp provided
 
@@ -59,8 +74,9 @@ class IAssistant(Interface):
         Returns:
             datetime: the next time it will take a record
         """
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def get_next(self, now: Optional[datetime] = None) -> datetime:
         """Calculates the next time an entry should be recorded
 
@@ -70,4 +86,4 @@ class IAssistant(Interface):
         Returns:
             datetime: The next time an entry will need to be taken
         """
-        pass
+        raise NotImplementedError
