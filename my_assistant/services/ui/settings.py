@@ -1,5 +1,3 @@
-import logging
-
 import PySimpleGUI as sg
 from my_assistant.interfaces.ui import IUIWarningService
 from my_assistant.models.settings import Settings
