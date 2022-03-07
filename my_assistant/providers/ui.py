@@ -1,10 +1,17 @@
 from datetime import datetime
-from models.settings import Settings
+
+from my_assistant.interfaces.ui.credentials import IUICredentialsService
+from my_assistant.interfaces.ui.issues import IUIIssueService
+from my_assistant.interfaces.ui.settings import IUISettingsService
+from my_assistant.interfaces.ui.theme import IUIThemeService
+from my_assistant.interfaces.ui.time_tracking import IUITimeTrackingService
+from my_assistant.interfaces.ui.warning import IUIWarningService
+
 from my_assistant.models.issues import Issue
-from my_assistant.interfaces.ui import IUICredentialsService, IUIIssueService, IUISettingsService, IUIThemeService, IUITimeTrackingService, IUIWarningService
+from my_assistant.models.settings import Settings
 
 
-class UIProvider:
+class UIFacadeService:
     ui_warning: IUIWarningService
     time_tracking_service: IUITimeTrackingService
     credentials_service: IUICredentialsService
@@ -13,13 +20,13 @@ class UIProvider:
     settings_service: IUISettingsService
 
     def __init__(
-            self,
-            ui_warning: IUIWarningService,
-            time_tracking_service: IUITimeTrackingService,
-            credentials_service: IUICredentialsService,
-            issue_service: IUIIssueService,
-            theme_service: IUIThemeService,
-            settings_service: IUISettingsService
+        self,
+        ui_warning: IUIWarningService,
+        time_tracking_service: IUITimeTrackingService,
+        credentials_service: IUICredentialsService,
+        issue_service: IUIIssueService,
+        theme_service: IUIThemeService,
+        settings_service: IUISettingsService,
     ):
         """Initializes an instance of the UIProvider
 
