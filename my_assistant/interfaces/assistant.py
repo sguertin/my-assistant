@@ -4,12 +4,7 @@ from typing import Optional
 
 
 class IAssistant(metaclass=ABCMeta):
-    """interface IAssistant - Assistant Service for handling decision making on time recording activities
-
-    Dependencies:
-        ITimeTrackingService: Service to handle interactions with Time Tracking Service
-        Settings: Application configuration state
-    """
+    """interface IAssistant - Assistant Service for handling decision making on time recording activities"""
 
     @classmethod
     def __subclasshook__(cls, subclass):
