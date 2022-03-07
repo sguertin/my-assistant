@@ -3,7 +3,7 @@ from datetime import datetime
 import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
-from my_assistant.interfaces.dependencies import IDependencyFactory
+from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.interfaces.ui.launcher import ILauncherService
 from my_assistant.models.settings import Settings
