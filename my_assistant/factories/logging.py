@@ -1,9 +1,8 @@
-from cmath import log
 import logging
 import logging.config
 from logging import Logger
 
-from my_assistant.models.logging import LogLevel
+from my_assistant.constants import LogLevel
 
 
 class LoggingFactory:
@@ -13,8 +12,8 @@ class LoggingFactory:
         self.log_level = log_level
         logging.basicConfig(
             level=LogLevel.CRITICAL,
-            format='%(name)-15s %(message)s',
-            datefmt='[%Y-%m-%d %H:%M:%S]',
+            format="%(name)-15s %(message)s",
+            datefmt="[%Y-%m-%d %H:%M:%S]",
         )
 
     def get_logger(self, name: str) -> Logger:
