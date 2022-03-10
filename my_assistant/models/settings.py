@@ -1,9 +1,16 @@
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
+from os import mkdir
 
 from dataclasses_json import dataclass_json, LetterCase
 
-from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE, LogLevel
+from my_assistant.constants import (
+    HOUR_RANGE,
+    MINUTE_RANGE,
+    SETTINGS_FILE,
+    WORKING_DIR,
+    LogLevel,
+)
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -108,6 +115,8 @@ class Settings:
             return cls.from_json(f.read())
 
     def save(self) -> None:
+        if not WORKING_DIR.exists():
+            mkdir(WORKING_DIR)
         """Saves current settings to configuration file"""
         with open(SETTINGS_FILE, "w") as f:
             f.write(self.to_json())
