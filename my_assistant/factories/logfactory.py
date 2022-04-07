@@ -4,7 +4,7 @@ from logging import Logger
 from typing import Optional
 
 from my_assistant.constants import LogLevel
-from my_assistant.interfaces.logging import ILoggingFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.models.settings import Settings
 
 
@@ -17,7 +17,7 @@ class LoggingFactory(ILoggingFactory):
         self.settings = settings
         logging.basicConfig(
             level=LogLevel.CRITICAL,
-            format="%(name)-15s %(message)s",
+            format="%(asctime)s %(name)-15s %(levelname)-8s %(message)s",
             datefmt="[%Y-%m-%d %H:%M:%S]",
         )
 

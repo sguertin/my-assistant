@@ -1,6 +1,6 @@
 from typing import Optional
 from models.settings import Settings
-from my_assistant.factories.logging import LoggingFactory
+from my_assistant.factories.logfactory import LoggingFactory
 from my_assistant.factories.time_tracking import TimeTrackingFactory
 
 from my_assistant.interfaces.assistant import IAssistant
@@ -8,7 +8,7 @@ from my_assistant.interfaces.authentication import IAuthenticationProvider
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.interfaces.factories.time_tracking import ITimeTrackingFactory
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logging import ILoggingFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.credentials import IUICredentialsService
@@ -44,13 +44,14 @@ class DependencyFactory(IDependencyFactory):
         auth_provider: IAuthenticationProvider = BasicAuthenticationProvider()
         issue_service: IIssueService = IssueService()
         ui_warning_service: IUIWarningService = UIWarningService()
+        ui_issue_service: IUIIssueService = UIIssueService(
+            issue_service, ui_warning_service
+        )
         ui_time_tracking: ITimeTrackingService = UITimeTrackingService(
             issue_service, ui_issue_service
         )
         ui_credential_service: IUICredentialsService = UICredentialsService()
-        ui_issue_service: IUIIssueService = UIIssueService(
-            issue_service, ui_warning_service
-        )
+
         ui_theme_service: IUIThemeService = UIThemeService()
         ui_settings_service: IUISettingsService = UISettingsService(ui_warning_service)
         ui_service: IUIFacadeService = UIFacadeService(

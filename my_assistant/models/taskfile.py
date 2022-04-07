@@ -20,12 +20,12 @@ class TimeEntry:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class TimeDayLog:
-    log_date: date
+    log_date: datetime
     file_name: str
     time_entries: list[TimeEntry]
 
     def __init__(self):
-        today = date.today()
+        today = datetime.today()
         self.log_date = today
         self.time_entries = []
         self.file_name = f'TimeTracking-{today.year}-{today.month}-{today.day}.log'

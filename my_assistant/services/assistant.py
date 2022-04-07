@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from logging import Logger
 from typing import Optional
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logging import ILoggingFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
@@ -22,7 +22,7 @@ class Assistant(IAssistant):
     log: Logger
 
     time_interval: timedelta
-    last_entry_time: datetime
+    last_entry_time: time
 
     @staticmethod
     def is_workday(date: datetime) -> bool:
@@ -36,7 +36,7 @@ class Assistant(IAssistant):
             and time_of_day.weekday() in self.settings.days_of_week
         )
 
-    def is_workhour(self, date: datetime = None) -> bool:
+    def is_work_hour(self, date: datetime = None) -> bool:
         if date is None:
             date = datetime.now()
         start_of_day = datetime(
@@ -56,7 +56,7 @@ class Assistant(IAssistant):
             )
             + self.time_interval
         )
-        return date >= start_of_day and date <= end_of_day
+        return start_of_day <= date <= end_of_day
 
     @property
     def issue_list(self) -> list[Issue]:
@@ -97,13 +97,13 @@ class Assistant(IAssistant):
             + next_timestamp.strftime("%H:%M")
         )
         if now >= next_timestamp:
-            if self.is_workday(now) and self.is_workhour(now):
-                self.main_prompt(next_timestamp, self.time_interval)
+            if self.is_workday(now) and self.is_work_hour(now):
+                self.main_prompt(next_timestamp)
                 # if Prompt is left open and more than one hour passes
                 # it will iterate through the hours that passed in between
                 while (
                     next_timestamp + self.time_interval
-                ) < datetime.now() and self.is_workhour(next_timestamp):
+                ) < datetime.now() and self.is_work_hour(next_timestamp):
                     next_timestamp = self.main_prompt(next_timestamp)
 
     def main_prompt(self, timestamp: datetime) -> datetime:
@@ -111,10 +111,6 @@ class Assistant(IAssistant):
         self.last_entry_time = timestamp.time()
 
         if issue is not None:
-            if (
-                issue not in self.issues_list
-            ):  # Check if any new issue entries were added
-                self.issues_list = self.issue_service.get_issues_list()
             try:
                 self.time_tracking.try_log_work(
                     issue.issue_num, comment, self.time_interval
@@ -136,7 +132,7 @@ class Assistant(IAssistant):
         else:
             try:
                 self.task_file_service.create_tracking_entry(
-                    timestamp, "No entry for this timeblock", self.time_interval
+                    timestamp, "No entry for this time block", self.time_interval
                 )
             except Exception as ex:
                 self.log.exception(ex)

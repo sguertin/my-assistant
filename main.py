@@ -7,12 +7,12 @@ from my_assistant.constants import (
     SETTINGS_FILE,
 )
 from my_assistant.factories.dependencies import DependencyFactory
-from my_assistant.factories.logging import LoggingFactory
+from my_assistant.factories.logfactory import LoggingFactory
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.models.settings import Settings
 from my_assistant.services.ui.launcher import LauncherService
 
-log = LoggingFactory().get_logger("Main")
+log = LoggingFactory(Settings.load()).get_logger("Main")
 
 if not WORKING_DIR.exists():
     log.info(f"Working directory not found at {WORKING_DIR}, creating...")
@@ -35,6 +35,6 @@ dependency_factory: IDependencyFactory = DependencyFactory()
 try:
     assistant, ui_provider, settings = dependency_factory.create_dependencies()
     launcher = LauncherService(assistant, ui_provider, dependency_factory, settings)
-    launcher.run_main_window(lambda: DependencyFactory.create_dependencies())
+    launcher.run_main_window()
 except Exception as e:
     log.error(e)

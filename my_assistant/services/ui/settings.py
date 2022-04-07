@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from my_assistant.interfaces.ui import IUIWarningService
+from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.settings import Settings
 
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, DAYS_OF_WEEK, LOGGING_LEVELS
@@ -11,10 +11,12 @@ class UISettingsService:
     def __init__(self, warning_service: IUIWarningService):
         self.warning_service = warning_service
 
-    def set_theme(self, new_theme) -> None:
+    @staticmethod
+    def set_theme(new_theme) -> None:
         sg.theme(new_theme)
 
-    def create_new_settings(self, values, theme) -> Settings:
+    @staticmethod
+    def create_new_settings(values, theme) -> Settings:
         return Settings(
             theme,
             values['base_url'],

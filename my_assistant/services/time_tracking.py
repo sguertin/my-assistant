@@ -5,7 +5,7 @@ from logging import Logger
 import requests
 
 from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.logging import ILoggingFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.models.issues import Issue

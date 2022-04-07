@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from models.settings import Settings
 from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.logging import ILoggingFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService

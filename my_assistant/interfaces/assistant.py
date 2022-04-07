@@ -11,7 +11,7 @@ class IAssistant(metaclass=ABCMeta):
         return (
             (hasattr(subclass, "is_workday") and callable(subclass.is_workday))
             and (hasattr(subclass, "is_work_time") and callable(subclass.is_work_time))
-            and (hasattr(subclass, "is_workhour") and callable(subclass.is_workhour))
+            and (hasattr(subclass, "is_workhour") and callable(subclass.is_work_hour))
             and (hasattr(subclass, "run") and callable(subclass.run))
             and (hasattr(subclass, "main_prompt") and callable(subclass.main_prompt))
             and (hasattr(subclass, "get_next") and callable(subclass.get_next))
@@ -43,7 +43,7 @@ class IAssistant(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def is_workhour(self, date: Optional[datetime] = None) -> bool:
+    def is_work_hour(self, date: Optional[datetime] = None) -> bool:
         """Determines if the given time (now by default) is within working hours
 
         Args:

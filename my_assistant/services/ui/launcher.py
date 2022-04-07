@@ -29,16 +29,15 @@ class LauncherService(ILauncherService):
 
     def run_main_window(self) -> None:
         window = sg.Window(
-            f"Time Tracking Assistant",
-            [
-                [
-                    [sg.Button("Record Time Now", key="Record")],
-                    [sg.Button("Manage Issues", key="Issues")],
-                    [sg.Button("Change Theme", key="Theme")],
-                    [sg.Button("Settings")],
-                    [sg.Button("Close")],
-                ]
+            title=f"Time Tracking Assistant",
+            layout=[
+                [sg.Button("Record Time Now", key="Record")],
+                [sg.Button("Manage Issues", key="Issues")],
+                [sg.Button("Change Theme", key="Theme")],
+                [sg.Button("Settings")],
+                [sg.Button("Close")],
             ],
+            size=(300, 300),
         )
         while True:
             event, _ = window.read(timeout=30000)

@@ -37,7 +37,7 @@ class Settings:
     @property
     def start_time(self) -> datetime:
         now = datetime.now()
-        if self.start_hour > self.end_hour and now.hour <= self.end_hour:
+        if self.start_hour > self.end_hour >= now.hour:
             return datetime(
                 now.year, now.day, now.month, self.start_hour, self.start_minute, 0
             ) - timedelta(days=1)
@@ -48,7 +48,7 @@ class Settings:
     @property
     def end_time(self) -> datetime:
         now = datetime.now()
-        if self.start_hour > self.end_hour and now.hour <= self.end_hour:
+        if self.start_hour > self.end_hour >= now.hour:
             return datetime(
                 now.year, now.day, now.month, self.end_hour, self.end_minute, 0
             )

@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.ui import IUIWarningService
+from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.issues import Issue
 
 

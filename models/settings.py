@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta, datetime
 from logging import INFO
 
@@ -20,7 +20,7 @@ class Settings:
     interval_minutes: int = 0
     enable_jira: bool = True
     log_level: int = INFO
-    days_of_week: list[int] = [0, 1, 2, 3, 4]
+    days_of_week: list[int] = field(default_factory=lambda: [0, 1, 2, 3, 4])
 
     @property
     def time_interval(self) -> timedelta:
@@ -32,7 +32,7 @@ class Settings:
     @property
     def start_time(self) -> datetime:
         now = datetime.now()
-        if self.start_hour > self.end_hour and now.hour <= self.end_hour:
+        if self._working_overnight(now):
             return datetime(now.year, now.day, now.month, self.start_hour, self.start_minute, 0) - timedelta(days=1)
         return datetime(now.year, now.day, now.month,
                         self.start_hour, self.start_minute, 0)
@@ -40,7 +40,7 @@ class Settings:
     @property
     def end_time(self) -> datetime:
         now = datetime.now()
-        if self.start_hour > self.end_hour and now.hour <= self.end_hour:
+        if self._working_overnight(now):
             return datetime(now.year, now.day, now.month, self.end_hour, self.end_minute, 0)
         return datetime(now.year, now.day, now.month, self.end_hour, self.end_minute, 0) + timedelta(days=1)
 
@@ -52,6 +52,9 @@ class Settings:
             timedelta: time between start_time and end_time
         """
         return self.end_time - self.start_time
+
+    def _working_overnight(self, now) -> bool:
+        return self.start_hour > self.end_hour >= now.hour
 
     def validate(self) -> list[str]:
         """Validates if the settings provided are valid
