@@ -1,8 +1,9 @@
 from logging import Logger
 import PySimpleGUI as sg
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
+from my_assistant.interfaces.ui.settings import IUISettingsService
 from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.settings import Settings
 
@@ -14,7 +15,7 @@ from my_assistant.constants import (
 )
 
 
-class UISettingsService:
+class UISettingsService(IUISettingsService):
     ui_warning_service: IUIWarningService
     settings_service: ISettingsService
     log: Logger

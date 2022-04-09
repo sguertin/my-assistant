@@ -1,7 +1,7 @@
 from logging import Logger
 from my_assistant.constants import ISSUES_LIST, DELETED_ISSUES_LIST
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.models.issues import Issue
 
 

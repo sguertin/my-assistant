@@ -5,11 +5,12 @@ from pathlib import Path
 from typing import Optional
 
 from my_assistant.constants import WORKING_DIR
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.models.taskfile import TimeDayLog, TimeEntry
 
 
-class TaskFileService:
+class TaskFileService(ITaskFileService):
     log: Logger
 
     def __init__(self, log_factory: ILoggingFactory):

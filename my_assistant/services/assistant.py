@@ -4,7 +4,7 @@ from typing import Optional
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService

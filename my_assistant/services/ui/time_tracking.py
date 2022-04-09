@@ -3,13 +3,14 @@ from logging import Logger
 
 import PySimpleGUI as sg
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.ui.issues import IUIIssueService
+from my_assistant.interfaces.ui.time_tracking import IUITimeTrackingService
 
 from my_assistant.models.issues import Issue
 
 
-class UITimeTrackingService:
+class UITimeTrackingService(IUITimeTrackingService):
     log: Logger
 
     def __init__(

@@ -8,8 +8,9 @@ try:
 except:
     WORKING_DIR: Path = Path(getenv("HOME"), "TimeTracking")
 
-NEEDS_AUTH_CODE = 901
-FAILED_AUTH = 403
+JIRA_NEEDS_AUTH_CODE = 901
+JIRA_FAILED_AUTH = 403
+JIRA_SUCCESS_RESPONSE = 201
 
 ISSUES_LIST: Path = Path(WORKING_DIR, "issues.json")
 DELETED_ISSUES_LIST: Path = Path(WORKING_DIR, "deletedIssues.json")

@@ -6,7 +6,7 @@ import os.path
 
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE, WORKING_DIR
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.models.settings import Settings
 
@@ -49,6 +49,9 @@ class SettingsService(ISettingsService):
             self.validate(settings)
             with open(SETTINGS_FILE, "w+") as f:
                 f.write(settings.to_json())
+        except IOError as err:
+            self._log.error(err)
+            raise
         except ValidationError as vex:
             self._log.error(vex)
             raise

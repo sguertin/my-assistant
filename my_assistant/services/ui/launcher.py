@@ -5,7 +5,7 @@ import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.interfaces.ui.launcher import IUILauncherService

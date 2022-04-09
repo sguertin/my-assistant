@@ -1,11 +1,11 @@
 from logging import Logger
 import PySimpleGUI as sg
-from my_assistant.interfaces.logfactory import ILoggingFactory
-
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.ui.theme import IUIThemeService
 from my_assistant.models.settings import Settings
 
 
-class UIThemeService:
+class UIThemeService(IUIThemeService):
     log: Logger
 
     def __init__(self, log_factory: ILoggingFactory):

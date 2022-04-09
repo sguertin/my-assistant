@@ -1,12 +1,17 @@
 from datetime import timedelta
 import json
 from logging import Logger
+from typing import Optional
 
 import requests
 
-from my_assistant.constants import NEEDS_AUTH_CODE, FAILED_AUTH
+from my_assistant.constants import (
+    JIRA_NEEDS_AUTH_CODE,
+    JIRA_FAILED_AUTH,
+    JIRA_SUCCESS_RESPONSE,
+)
 from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
@@ -54,12 +59,15 @@ class JiraService(ITimeTrackingService):
         }
 
     def try_log_work(
-        self, issue: Issue, comment: str = None, time_interval: timedelta = None
+        self,
+        issue: Issue,
+        comment: Optional[str] = None,
+        time_interval: Optional[timedelta] = None,
     ) -> None:
         if time_interval is None:
             time_interval = self.settings.time_interval
         response = self.log_hours(issue, comment, time_interval)
-        if response.status_code != 201:
+        if response.status_code != JIRA_SUCCESS_RESPONSE:
             self.log.warning(
                 f"Received Response Code: {response.status_code} Message: {response.message}"
             )
@@ -67,7 +75,7 @@ class JiraService(ITimeTrackingService):
                 f'Received unexpected response from Jira: HttpStatusCode: {response.status_code} Message: "{response.message}"'
             )
             if retry:
-                if response.status_code in [NEEDS_AUTH_CODE, FAILED_AUTH]:
+                if response.status_code in [JIRA_NEEDS_AUTH_CODE, JIRA_FAILED_AUTH]:
                     credentials = self.ui_provider.credentials_prompt()
                     self.auth_provider.set_auth(credentials)
                 return self.try_log_work(issue, comment)
@@ -83,7 +91,9 @@ class JiraService(ITimeTrackingService):
             )
         if not self.auth_provider.get_auth():
             self.log.debug("Credentials not found")
-            return JiraResponse(NEEDS_AUTH_CODE, "Need to reauthenticate with Jira")
+            return JiraResponse(
+                JIRA_NEEDS_AUTH_CODE, "Need to reauthenticate with Jira"
+            )
 
         url = f"{self.base_url}/rest/api/2/issue/{issue_num}/worklog"
 
@@ -100,12 +110,12 @@ class JiraService(ITimeTrackingService):
             )
             response = requests.post(url, headers=self.headers, data=json.dumps(data))
 
-            if response.status_code == 403:
+            if response.status_code == JIRA_FAILED_AUTH:
                 self.auth_provider.clear_auth()
                 return JiraResponse(
                     response.status_code, "Authentication with Jira failed!"
                 )
-            elif response.status_code != 201:
+            elif response.status_code != JIRA_SUCCESS_RESPONSE:
                 return JiraResponse(
                     response.status_code,
                     f"Expected status code of 201, got {response.status_code}",
@@ -113,6 +123,11 @@ class JiraService(ITimeTrackingService):
             return JiraResponse(response.status_code)
         else:
             warning_msg = f"Jira encountered an error attempting to access {issue_num} with a Status Code of {status_code}"
+            self.log.warning(
+                "Jira encountered an error attempting to access %s with a Status Code of %s",
+                issue_num,
+                status_code,
+            )
             return JiraResponse(status_code, warning_msg)
 
     def get_url(self, issue_num):

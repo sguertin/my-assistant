@@ -3,12 +3,13 @@ from logging import Logger
 import PySimpleGUI as sg
 
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.ui.issues import IUIIssueService
 from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.issues import Issue
 
 
-class UIIssueService:
+class UIIssueService(IUIIssueService):
     issue_service: IIssueService
     ui_warning_service: IUIWarningService
     log: Logger

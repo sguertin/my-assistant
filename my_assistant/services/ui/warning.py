@@ -1,10 +1,11 @@
 from logging import Logger
 import PySimpleGUI as sg
 
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.ui.warning import IUIWarningService
 
 
-class UIWarningService:
+class UIWarningService(IUIWarningService):
     log: Logger
 
     def __init__(self, log_factory: ILoggingFactory):
