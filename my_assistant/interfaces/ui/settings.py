@@ -25,7 +25,7 @@ class IUISettingsService(metaclass=ABCMeta):
         Returns:
             Settings: The updated settings
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def set_theme(self, new_theme: str) -> None:
@@ -34,4 +34,4 @@ class IUISettingsService(metaclass=ABCMeta):
         Args:
             new_theme (str): the name of the theme being set
         """
-        raise NotImplementedError
+        raise NotImplementedError()
