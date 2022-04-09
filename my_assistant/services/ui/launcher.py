@@ -34,16 +34,16 @@ class UILauncherService(IUILauncherService):
         self.log = log_factory.get_logger("UILauncherService")
 
     def run_main_window(self) -> None:
+        button_size = (35, 1)
         window = sg.Window(
             title=f"Time Tracking Assistant",
             layout=[
-                [sg.Button("Record Time Now", key="Record", size=(15, 100))],
-                [sg.Button("Manage Issues", key="Issues", size=(15, 100))],
-                [sg.Button("Change Theme", key="Theme", size=(15, 100))],
-                [sg.Button("Settings", size=(15, 100))],
-                [sg.Button("Close", size=(15, 100))],
+                [sg.Button("Record Time Now", key="Record", size=button_size)],
+                [sg.Button("Manage Issues", key="Issues", size=button_size)],
+                [sg.Button("Change Theme", key="Theme", size=button_size)],
+                [sg.Button("Settings", size=button_size)],
+                [sg.Button("Close", size=button_size)],
             ],
-            size=(300, 300),
         )
         while True:
             event, _ = window.read(timeout=30000)
