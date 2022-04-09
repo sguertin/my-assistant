@@ -5,6 +5,7 @@ from typing import Optional
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService
 from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
@@ -17,7 +18,7 @@ class Assistant(IAssistant):
     ui_provider: IUIFacadeService
     task_file_service: ITaskFileService
     issue_service: IIssueService
-    settings: Settings
+    settings_service: ISettingsService
 
     log: Logger
 
@@ -69,9 +70,9 @@ class Assistant(IAssistant):
         task_file_service: ITaskFileService,
         issue_service: IIssueService,
         logging_factory: ILoggingFactory,
-        settings: Settings,
+        settings_service: ISettingsService,
     ):
-        self.settings = settings
+        self.settings = settings_service.get_settings()
         self.time_tracking = time_tracking
         self.ui_provider = ui_provider
         self.task_file_service = task_file_service
@@ -85,7 +86,7 @@ class Assistant(IAssistant):
         )
         self.log = logging_factory.get_logger("Assistant")
         self.log.info("Assistant class initialization is complete")
-        self.ui_provider.set_theme(settings.theme)
+        self.ui_provider.set_theme(self.settings.theme)
 
     def run(self):
         next_timestamp = self.get_next()

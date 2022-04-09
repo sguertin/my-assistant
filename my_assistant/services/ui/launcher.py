@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.interfaces.ui.launcher import ILauncherService
 from my_assistant.models.settings import Settings
@@ -20,10 +21,10 @@ class LauncherService(ILauncherService):
         assistant: IAssistant,
         ui_provider: IUIFacadeService,
         dependency_factory: IDependencyFactory,
-        settings: Settings,
+        settings_service: ISettingsService,
     ):
         self.assistant = assistant
-        self.settings = settings
+        self.settings = settings_service.get_settings()
         self.dependency_factory = dependency_factory
         self.ui_provider = ui_provider
 
@@ -56,10 +57,10 @@ class LauncherService(ILauncherService):
                 (
                     assistant,
                     ui_provider,
-                    settings,
+                    settings_service,
                 ) = self.dependency_factory.create_dependencies()
                 self.assistant = assistant
                 self.ui_provider = ui_provider
-                self.settings = settings
+                self.settings = settings_service.get_settings()
 
             self.assistant.run()
