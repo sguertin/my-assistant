@@ -1,5 +1,9 @@
+from logging import Logger
+
 import PySimpleGUI as sg
+
 from my_assistant.interfaces.issues import IIssueService
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.issues import Issue
 
@@ -7,12 +11,17 @@ from my_assistant.models.issues import Issue
 class UIIssueService:
     issue_service: IIssueService
     ui_warning_service: IUIWarningService
+    log: Logger
 
     def __init__(
-        self, issue_service: IIssueService, ui_warning_service: IUIWarningService
+        self,
+        issue_service: IIssueService,
+        ui_warning_service: IUIWarningService,
+        log_factory: ILoggingFactory,
     ):
         self.issue_service = issue_service
         self.ui_warning_service = ui_warning_service
+        self.log = log_factory.get_logger("UIIssueService")
 
     def get_issue_info(self, issues: list[Issue]) -> list[Issue]:
         issue_field = sg.In(key="-ISSUE-")
@@ -38,6 +47,7 @@ class UIIssueService:
         )
         while True:
             event, values = window.read()
+            self.log.info("Event %s received", event)
             if event in ("Another", "Save") and values:
                 issue_num, description = values["-ISSUE-"], values["-DESCRIPTION-"]
                 if issue_num:

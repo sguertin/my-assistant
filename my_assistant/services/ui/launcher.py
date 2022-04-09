@@ -1,9 +1,11 @@
 from datetime import datetime
+from logging import Logger
 
 import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.interfaces.ui.launcher import IUILauncherService
@@ -15,6 +17,7 @@ class UILauncherService(IUILauncherService):
     ui_provider: IUIFacadeService
     dependency_factory: IDependencyFactory
     settings: Settings
+    log: Logger
 
     def __init__(
         self,
@@ -22,11 +25,13 @@ class UILauncherService(IUILauncherService):
         ui_provider: IUIFacadeService,
         dependency_factory: IDependencyFactory,
         settings_service: ISettingsService,
+        log_factory: ILoggingFactory,
     ):
         self.assistant = assistant
         self.settings = settings_service.get_settings()
         self.dependency_factory = dependency_factory
         self.ui_provider = ui_provider
+        self.log = log_factory.get_logger("UILauncherService")
 
     def run_main_window(self) -> None:
         window = sg.Window(
@@ -42,6 +47,7 @@ class UILauncherService(IUILauncherService):
         )
         while True:
             event, _ = window.read(timeout=30000)
+            self.log.info("Event %s received", event)
             if event == "Record":
                 self.assistant.main_prompt(datetime.now())
             elif event == "Issues":

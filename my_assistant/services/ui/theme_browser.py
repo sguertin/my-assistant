@@ -1,9 +1,16 @@
+from logging import Logger
 import PySimpleGUI as sg
+from my_assistant.interfaces.logfactory import ILoggingFactory
 
 from my_assistant.models.settings import Settings
 
 
 class UIThemeService:
+    log: Logger
+
+    def __init__(self, log_factory: ILoggingFactory):
+        self.log = log_factory.get_logger("UIThemeService")
+
     def manage_theme(self, settings: Settings) -> Settings:
         layout = [
             [sg.Text("Theme Browser")],
@@ -23,6 +30,7 @@ class UIThemeService:
 
         while True:  # Event Loop
             event, values = window.read()
+            self.log.info("Event %s received", event)
             if event in (sg.WIN_CLOSED, "Exit"):
                 break
             new_theme = values["-LIST-"][0]

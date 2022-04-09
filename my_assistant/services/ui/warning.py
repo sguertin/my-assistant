@@ -1,12 +1,21 @@
+from logging import Logger
 import PySimpleGUI as sg
+
+from my_assistant.interfaces.logfactory import ILoggingFactory
 
 
 class UIWarningService:
+    log: Logger
+
+    def __init__(self, log_factory: ILoggingFactory):
+        self.log = log_factory.get_logger("UIWarningService")
+
     def warning_ok_cancel_prompt(self, msg: str) -> bool:
         event, _ = sg.Window(
             f"Time Tracking - WARNING",
             [[sg.T(msg)], [sg.Button("Proceed", bind_return_key=True), sg.Cancel()]],
         ).read(close=True)
+        self.log.info("Event %s received", event)
         return event == "Proceed"
 
     def warning_prompt(self, msg: str):
@@ -24,5 +33,5 @@ class UIWarningService:
                 [sg.Button("Retry", bind_return_key=True), sg.Cancel()],
             ],
         ).read(close=True)
-
+        self.log.info("Event %s received", event)
         return event == "Retry"

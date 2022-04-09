@@ -1,5 +1,7 @@
+from logging import Logger
 import PySimpleGUI as sg
 from my_assistant.exceptions.validation import ValidationError
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.warning import IUIWarningService
 from my_assistant.models.settings import Settings
@@ -15,12 +17,17 @@ from my_assistant.constants import (
 class UISettingsService:
     ui_warning_service: IUIWarningService
     settings_service: ISettingsService
+    log: Logger
 
     def __init__(
-        self, ui_warning_service: IUIWarningService, settings_service: ISettingsService
+        self,
+        ui_warning_service: IUIWarningService,
+        settings_service: ISettingsService,
+        log_factory: ILoggingFactory,
     ):
         self.ui_warning_service = ui_warning_service
         self.settings_service = settings_service
+        self.log = log_factory.get_logger("UISettingsService")
 
     @staticmethod
     def set_theme(new_theme) -> None:
@@ -100,6 +107,7 @@ class UISettingsService:
         )
         while True:
             event, values = window.read()
+            self.log.info("Event %s received", event)
             if event in ["Submit", "Save"]:
                 settings = self.create_new_settings(values, settings.theme)
                 try:

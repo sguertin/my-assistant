@@ -1,16 +1,26 @@
 from datetime import datetime
+from logging import Logger
 
 import PySimpleGUI as sg
 from my_assistant.interfaces.issues import IIssueService
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.ui.issues import IUIIssueService
 
 from my_assistant.models.issues import Issue
 
 
 class UITimeTrackingService:
-    def __init__(self, issue_service: IIssueService, ui_issue_service: IUIIssueService):
+    log: Logger
+
+    def __init__(
+        self,
+        issue_service: IIssueService,
+        ui_issue_service: IUIIssueService,
+        log_factory: ILoggingFactory,
+    ):
         self.issue_service = issue_service
         self.ui_issue_service = ui_issue_service
+        self.log = log_factory.get_logger("UITimeTrackingService")
 
     def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
         entries = self.issue_service.get_issues_list()
@@ -30,7 +40,7 @@ class UITimeTrackingService:
         )
         while True:
             event, values = window.read()
-
+            self.log.info("Event %s received", event)
             if event == "Submit":
                 window.close()
                 return values["-ENTRY-"], values["-COMMENT-"]

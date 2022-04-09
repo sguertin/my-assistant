@@ -42,17 +42,21 @@ class DependencyFactory(IDependencyFactory):
 
         auth_provider: IAuthenticationProvider = BasicAuthenticationProvider()
         issue_service: IIssueService = IssueService(logging_factory)
-        ui_warning_service: IUIWarningService = UIWarningService()
+        ui_warning_service: IUIWarningService = UIWarningService(logging_factory)
         ui_issue_service: IUIIssueService = UIIssueService(
-            issue_service, ui_warning_service
+            issue_service, ui_warning_service, logging_factory
         )
         ui_time_tracking: ITimeTrackingService = UITimeTrackingService(
-            issue_service, ui_issue_service
+            issue_service, ui_issue_service, logging_factory
         )
-        ui_credential_service: IUICredentialsService = UICredentialsService()
+        ui_credential_service: IUICredentialsService = UICredentialsService(
+            logging_factory
+        )
 
-        ui_theme_service: IUIThemeService = UIThemeService()
-        ui_settings_service: IUISettingsService = UISettingsService(ui_warning_service)
+        ui_theme_service: IUIThemeService = UIThemeService(logging_factory)
+        ui_settings_service: IUISettingsService = UISettingsService(
+            ui_warning_service, settings_service, logging_factory
+        )
         ui_service: IUIFacadeService = UIFacadeService(
             ui_warning_service,
             ui_time_tracking,
