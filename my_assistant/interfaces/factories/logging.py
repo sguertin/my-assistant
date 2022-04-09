@@ -19,4 +19,4 @@ class ILoggingFactory(ABCMeta):
         Returns:
             Logger: The configured logger
         """
-        raise NotImplementedError
+        raise NotImplementedError()
