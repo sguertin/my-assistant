@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABCMeta
+from typing import Callable
 
-from models.settings import Settings
+from my_assistant.models.settings import Settings
 
 
 class IUIThemeService(metaclass=ABCMeta):
@@ -11,11 +12,14 @@ class IUIThemeService(metaclass=ABCMeta):
         ) or NotImplemented
 
     @abstractmethod
-    def manage_theme(self, settings: Settings) -> Settings:
+    def manage_theme(
+        self, settings: Settings, update_dependencies: Callable
+    ) -> Settings:
         """Generates a UI Prompt to allow the user to change the theme for the application
 
         Args:
             settings (Settings): The current application settings
+            update_dependencies (Callable): function to invoke after updating settings
 
         Returns:
             Settings: the updated settings

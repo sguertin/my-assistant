@@ -5,7 +5,7 @@ from logging import Logger
 from rich.logging import RichHandler
 
 from my_assistant.constants import LogLevel
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 
 
 class LoggingFactory(ILoggingFactory):

@@ -9,7 +9,7 @@ class IAssistant(metaclass=ABCMeta):
     @classmethod
     def __subclasshook__(cls, subclass):
         return (
-            (hasattr(subclass, "is_workday") and callable(subclass.is_workday))
+            (hasattr(subclass, "is_work_day") and callable(subclass.is_work_day))
             and (hasattr(subclass, "is_work_time") and callable(subclass.is_work_time))
             and (hasattr(subclass, "is_workhour") and callable(subclass.is_work_hour))
             and (hasattr(subclass, "run") and callable(subclass.run))
@@ -19,7 +19,7 @@ class IAssistant(metaclass=ABCMeta):
         )
 
     @abstractstaticmethod
-    def is_workday(date: datetime) -> bool:
+    def is_work_day(date: datetime) -> bool:
         """Checks if the date provided is a workday
 
         Args:

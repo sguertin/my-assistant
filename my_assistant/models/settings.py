@@ -62,3 +62,6 @@ class Settings(DataClassJsonMixin):
             timedelta: time between start_time and end_time
         """
         return self.end_time - self.start_time
+
+    def __str__(self):
+        return self.to_json(indent=4)

@@ -6,54 +6,82 @@ import os.path
 
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE, WORKING_DIR
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.models.settings import Settings
 
 
 class SettingsService(ISettingsService):
-    _log: Logger
-    _settings: Settings = None
-    _last_modified: str = None
+    log: Logger
+    settings: Settings = None
+    last_modified: str = None
 
     def __init__(self, logging_factory: ILoggingFactory):
-        self._log = logging_factory.get_logger("SettingsService")
-        if not WORKING_DIR.exists():
-            makedirs(WORKING_DIR)
+        self.log = logging_factory.get_logger("SettingsService")
+        try:
+            if not WORKING_DIR.exists():
+                makedirs(WORKING_DIR)
+                self.log.info("Created working directory at: %s", WORKING_DIR)
+        except OSError as err:
+            self.log.error(err)
 
     def get_settings(self) -> Settings:
-        if self._settings is None:
+        if self.settings is None:
             return self.load()
-        return deepcopy(self._settings)
+        return deepcopy(self.settings)
 
     def load(self) -> Settings:
-        if not SETTINGS_FILE.exists():
-            return self.restore_defaults()
-        if self._last_modified is not None:
-            last_modified = time.strftime(
-                "%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(SETTINGS_FILE))
-            )
-            if last_modified != self._last_modified:
+        try:
+            if not SETTINGS_FILE.exists():
+                self.log.info(
+                    "No settings file found, creating new settings file at %s",
+                    SETTINGS_FILE,
+                )
+                self.last_modified = time.strftime(
+                    "%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(SETTINGS_FILE))
+                )
+                return self.restore_defaults()
+            if self.settings is None:
+                self.log.info("Loading settings for first time from %s", SETTINGS_FILE)
                 with open(SETTINGS_FILE, "r") as f:
-                    self._settings = Settings.from_json(f.read())
-                    self._last_modified = last_modified
-        return deepcopy(self._settings)
+                    self.settings = Settings.from_json(f.read())
+                    self.last_modified = time.strftime(
+                        "%Y-%m-%d %H:%M:%S",
+                        time.localtime(os.path.getmtime(SETTINGS_FILE)),
+                    )
+            if self.last_modified is not None:
+                last_modified = time.strftime(
+                    "%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(SETTINGS_FILE))
+                )
+                if last_modified != self.last_modified:
+                    self.log.info(
+                        "File system has more recent version of settings, loading from %s",
+                        SETTINGS_FILE,
+                    )
+                    with open(SETTINGS_FILE, "r") as f:
+                        self.settings = Settings.from_json(f.read())
+                        self.last_modified = last_modified
+            return deepcopy(self.settings)
+        except OSError as err:
+            self.log.error(err)
+            raise
 
     def restore_defaults(self) -> Settings:
-        self._settings = Settings()
-        self.save(self._settings)
-        return deepcopy(self._settings)
+        self.settings = Settings()
+        self.save(self.settings)
+        return deepcopy(self.settings)
 
     def save(self, settings: Settings) -> None:
         try:
             self.validate(settings)
             with open(SETTINGS_FILE, "w+") as f:
                 f.write(settings.to_json())
-        except IOError as err:
-            self._log.error(err)
+            self.settings = settings
+        except OSError as err:
+            self.log.error(err)
             raise
         except ValidationError as vex:
-            self._log.error(vex)
+            self.log.error(vex)
             raise
 
     def validate(self, settings: Settings) -> None:

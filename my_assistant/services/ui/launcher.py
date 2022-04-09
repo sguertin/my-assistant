@@ -5,7 +5,7 @@ import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.interfaces.ui.launcher import IUILauncherService
@@ -37,11 +37,11 @@ class UILauncherService(IUILauncherService):
         window = sg.Window(
             title=f"Time Tracking Assistant",
             layout=[
-                [sg.Button("Record Time Now", key="Record")],
-                [sg.Button("Manage Issues", key="Issues")],
-                [sg.Button("Change Theme", key="Theme")],
-                [sg.Button("Settings")],
-                [sg.Button("Close")],
+                [sg.Button("Record Time Now", key="Record", size=(15, 100))],
+                [sg.Button("Manage Issues", key="Issues", size=(15, 100))],
+                [sg.Button("Change Theme", key="Theme", size=(15, 100))],
+                [sg.Button("Settings", size=(15, 100))],
+                [sg.Button("Close", size=(15, 100))],
             ],
             size=(300, 300),
         )
@@ -56,17 +56,20 @@ class UILauncherService(IUILauncherService):
                 self.ui_provider.change_settings(self.settings)
             elif event == "Theme":
                 self.ui_provider.manage_theme(self.settings)
-            elif event == "Close":
+            elif event in (sg.WIN_CLOSED, "Close"):
                 window.close()
                 break
-            if event in ("Settings", "Theme"):
-                (
-                    assistant,
-                    ui_provider,
-                    settings_service,
-                ) = self.dependency_factory.create_dependencies()
-                self.assistant = assistant
-                self.ui_provider = ui_provider
-                self.settings = settings_service.get_settings()
 
             self.assistant.run()
+
+    def update_dependencies(
+        self,
+        assistant: IAssistant,
+        ui_provider: IUIFacadeService,
+        settings_service: ISettingsService,
+        log_factory: ILoggingFactory,
+    ):
+        self.assistant = assistant
+        self.ui_provider = ui_provider
+        self.settings = settings_service.get_settings()
+        self.log = log_factory.get_logger("UILauncher")

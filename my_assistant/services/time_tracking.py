@@ -11,7 +11,7 @@ from my_assistant.constants import (
     JIRA_SUCCESS_RESPONSE,
 )
 from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService

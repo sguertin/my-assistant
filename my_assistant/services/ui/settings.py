@@ -1,7 +1,8 @@
 from logging import Logger
+from typing import Callable
 import PySimpleGUI as sg
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.settings import IUISettingsService
 from my_assistant.interfaces.ui.warning import IUIWarningService
@@ -50,7 +51,9 @@ class UISettingsService(IUISettingsService):
             [value for day, value in DAYS_OF_WEEK.items() if values[day]],
         )
 
-    def change_settings(self, settings: Settings) -> Settings:
+    def change_settings(
+        self, settings: Settings, update_dependencies: Callable
+    ) -> Settings:
         original_settings = Settings.from_dict(settings.to_dict())
         day_checkboxes = []
         for day in DAYS_OF_WEEK.keys():
@@ -116,6 +119,7 @@ class UISettingsService(IUISettingsService):
                     window.close()
                     return settings
                 except ValidationError as err:
+                    self.log.error(err)
                     self.ui_warning_service.warning_prompt(err.message)
             elif event in ("Cancel", sg.WINDOW_CLOSED):
                 window.close()

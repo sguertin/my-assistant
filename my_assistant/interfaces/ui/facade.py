@@ -1,7 +1,8 @@
 from abc import abstractmethod, ABCMeta
 from datetime import datetime
+from typing import Callable
 
-from models.settings import Settings
+from my_assistant.models.settings import Settings
 from my_assistant.models.issues import Issue
 
 

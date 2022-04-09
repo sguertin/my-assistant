@@ -1,7 +1,7 @@
 from logging import Logger
 import PySimpleGUI as sg
 
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.ui.warning import IUIWarningService
 
 

@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
-from models.settings import Settings
+from my_assistant.interfaces.ui.launcher import IUILauncherService
+from my_assistant.models.settings import Settings
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.settings import ISettingsService
@@ -12,8 +13,18 @@ class IDependencyFactory(metaclass=ABCMeta):
     def __subclasshook__(cls, subclass):
         return (
             hasattr(subclass, "create_dependencies")
-            and callable(subclass.create_dependencies)
+            and callable(subclass.create_dependencies),
+            hasattr(subclass, "create_launcher") and callable(subclass.create_launcher),
         ) or NotImplemented
+
+    @abstractmethod
+    def create_launcher(self) -> IUILauncherService:
+        """Creates the launcher service with all it's dependencies
+
+        Returns:
+            IUILauncherService: The UI launcher service
+        """
+        raise NotImplementedError()
 
     @abstractmethod
     def create_dependencies(

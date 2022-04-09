@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 from my_assistant.constants import WORKING_DIR
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.models.taskfile import TimeDayLog, TimeEntry
 
@@ -47,7 +47,7 @@ class TaskFileService(ITaskFileService):
         try:
             with open(self.get_time_log_path(timestamp), "w") as f:
                 f.write(task_log.to_json())
-        except IOError as err:
+        except OSError as err:
             self.log.error(err)
             raise
 

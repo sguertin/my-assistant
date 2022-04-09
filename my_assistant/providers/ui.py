@@ -1,4 +1,6 @@
 from datetime import datetime
+from turtle import update
+from typing import Callable
 
 from my_assistant.interfaces.ui.credentials import IUICredentialsService
 from my_assistant.interfaces.ui.issues import IUIIssueService

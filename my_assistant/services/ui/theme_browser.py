@@ -1,15 +1,20 @@
 from logging import Logger
 import PySimpleGUI as sg
-from my_assistant.interfaces.factories.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.theme import IUIThemeService
 from my_assistant.models.settings import Settings
 
 
 class UIThemeService(IUIThemeService):
     log: Logger
+    settings_service: ISettingsService
 
-    def __init__(self, log_factory: ILoggingFactory):
+    def __init__(
+        self, log_factory: ILoggingFactory, settings_service: ISettingsService
+    ):
         self.log = log_factory.get_logger("UIThemeService")
+        self.settings_service = settings_service
 
     def manage_theme(self, settings: Settings) -> Settings:
         layout = [
@@ -32,6 +37,7 @@ class UIThemeService(IUIThemeService):
             event, values = window.read()
             self.log.info("Event %s received", event)
             if event in (sg.WIN_CLOSED, "Exit"):
+                sg.theme(settings.theme)
                 break
             new_theme = values["-LIST-"][0]
             sg.theme(new_theme)
@@ -39,10 +45,8 @@ class UIThemeService(IUIThemeService):
             if event == "Update":
                 if settings.theme != new_theme:
                     settings.theme = new_theme
-                    settings.save()
+                    self.settings_service.save(settings)
                 break
-            else:
-                sg.theme(settings.theme)
 
         window.close()
         return settings
