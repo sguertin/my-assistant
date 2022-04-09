@@ -70,7 +70,9 @@ class DependencyFactory(IDependencyFactory):
             ui_credential_service: IUICredentialsService = UICredentialsService(
                 log_factory
             )
-            ui_theme_service: IUIThemeService = UIThemeService(log_factory)
+            ui_theme_service: IUIThemeService = UIThemeService(
+                log_factory, settings_service
+            )
             ui_settings_service: IUISettingsService = UISettingsService(
                 ui_warning_service, settings_service, log_factory
             )
