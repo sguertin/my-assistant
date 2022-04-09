@@ -1,8 +1,8 @@
 from logging import Logger
 import PySimpleGUI as sg
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.ui.theme import IUIThemeService
+from my_assistant.interfaces.ui_theme import IUIThemeService
 from my_assistant.models.settings import Settings
 
 

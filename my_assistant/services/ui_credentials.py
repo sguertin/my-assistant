@@ -1,8 +1,8 @@
 from logging import Logger
 import PySimpleGUI as sg
 
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
-from my_assistant.interfaces.ui.credentials import IUICredentialsService
+from my_assistant.interfaces.log_factory import ILoggingFactory
+from my_assistant.interfaces.ui_credentials import IUICredentialsService
 
 
 class UICredentialsService(IUICredentialsService):

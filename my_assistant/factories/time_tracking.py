@@ -1,8 +1,8 @@
 from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.factories.time_tracking import ITimeTrackingFactory
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.time_tracking_factory import ITimeTrackingFactory
+from my_assistant.interfaces.log_factory import ILoggingFactory
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
-from my_assistant.interfaces.ui.facade import IUIFacadeService
+from my_assistant.interfaces.ui_facade import IUIFacadeService
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.services.time_tracking import JiraService, MockTimeTrackingService
 

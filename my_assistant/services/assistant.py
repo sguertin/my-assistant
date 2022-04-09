@@ -4,11 +4,11 @@ from typing import Optional
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
-from my_assistant.interfaces.ui.facade import IUIFacadeService
+from my_assistant.interfaces.ui_facade import IUIFacadeService
 from my_assistant.models.settings import Settings
 from my_assistant.models.issues import Issue
 
@@ -174,3 +174,7 @@ class Assistant(IAssistant):
                     next_timestamp + self.time_interval
                 ) < datetime.now() and self.is_work_hour(next_timestamp):
                     next_timestamp = self.main_prompt(next_timestamp)
+            else:
+                self.log.info(
+                    "%s is not within working hours", now.strftime("%Y-%m-%d %H:%M:%S")
+                )

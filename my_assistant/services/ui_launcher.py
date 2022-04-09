@@ -4,11 +4,11 @@ from logging import Logger
 import PySimpleGUI as sg
 
 from my_assistant.interfaces.assistant import IAssistant
-from my_assistant.interfaces.factories.dependencies import IDependencyFactory
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.dependency_factory import IDependencyFactory
+from my_assistant.interfaces.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.ui.facade import IUIFacadeService
-from my_assistant.interfaces.ui.launcher import IUILauncherService
+from my_assistant.interfaces.ui_facade import IUIFacadeService
+from my_assistant.interfaces.ui_launcher import IUILauncherService
 from my_assistant.models.settings import Settings
 
 
@@ -59,7 +59,6 @@ class UILauncherService(IUILauncherService):
             elif event in (sg.WIN_CLOSED, "Close"):
                 window.close()
                 break
-
             self.assistant.run()
 
     def update_dependencies(

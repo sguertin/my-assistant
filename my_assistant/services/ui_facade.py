@@ -1,13 +1,11 @@
 from datetime import datetime
-from turtle import update
-from typing import Callable
 
-from my_assistant.interfaces.ui.credentials import IUICredentialsService
-from my_assistant.interfaces.ui.issues import IUIIssueService
-from my_assistant.interfaces.ui.settings import IUISettingsService
-from my_assistant.interfaces.ui.theme import IUIThemeService
-from my_assistant.interfaces.ui.time_tracking import IUITimeTrackingService
-from my_assistant.interfaces.ui.warning import IUIWarningService
+from my_assistant.interfaces.ui_credentials import IUICredentialsService
+from my_assistant.interfaces.ui_issues import IUIIssueService
+from my_assistant.interfaces.ui_settings import IUISettingsService
+from my_assistant.interfaces.ui_theme import IUIThemeService
+from my_assistant.interfaces.ui_time_tracking import IUITimeTrackingService
+from my_assistant.interfaces.ui_warning import IUIWarningService
 
 from my_assistant.models.issues import Issue
 from my_assistant.models.settings import Settings

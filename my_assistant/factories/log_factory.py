@@ -5,7 +5,7 @@ from logging import Logger
 from rich.logging import RichHandler
 
 from my_assistant.constants import LogLevel
-from my_assistant.interfaces.factories.log_factory import ILoggingFactory
+from my_assistant.interfaces.log_factory import ILoggingFactory
 
 
 class LoggingFactory(ILoggingFactory):
@@ -15,7 +15,7 @@ class LoggingFactory(ILoggingFactory):
         self._log_level = log_level
         logging.basicConfig(
             datefmt="[%Y-%m-%d %H:%M:%S]",
-            format="[%(name)s] - %(message)s",
+            format="%(name)20s - %(message)s",
             handlers=[RichHandler(rich_tracebacks=True)],
             level=LogLevel.NOTSET,
         )

@@ -1,11 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
-from my_assistant.interfaces.ui.launcher import IUILauncherService
+from my_assistant.interfaces.ui_launcher import IUILauncherService
 from my_assistant.models.settings import Settings
 
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.ui.facade import IUIFacadeService
+from my_assistant.interfaces.ui_facade import IUIFacadeService
 
 
 class IDependencyFactory(metaclass=ABCMeta):
