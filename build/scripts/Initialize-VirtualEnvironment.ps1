@@ -25,4 +25,3 @@ function Initialize-VirtualEnvironment {
 
     return;
 }
-Set-Alias -Name activate -Value Initialize-VirtualEnvironment;

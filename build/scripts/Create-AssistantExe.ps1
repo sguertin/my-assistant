@@ -9,9 +9,4 @@ if($LegacyBuild) {
 } else {
     Initialize-VirtualEnvironment -Name "venv310";    
 }
-& pyinstaller --noconfirm `
-    --log-level=WARN `
-    --onefile `
-    --noconsole `
-    --strip `Y
-    main.py
+& auto-py-to-exe.exe
