@@ -44,7 +44,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             bool: True if Retry is selected
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def warning_prompt(self, msg: str) -> None:
@@ -53,7 +53,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Args:
             msg (str): The warning message to be displayed to the user
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
@@ -65,7 +65,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             tuple[Issue, str]: the issue and a comment
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def credentials_prompt(self) -> "tuple[str, str]":
@@ -74,7 +74,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             tuple[str,str]: the credentials entered by the user, ( user, raise NotImplementedError )
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def manage_issues(self) -> tuple[bool, list[Issue]]:
@@ -83,7 +83,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             tuple[bool, list[Issue]]: a tuple, True if the user selected 'Save', and the updated list of issues
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def manage_theme(self, settings: Settings) -> Settings:
@@ -95,7 +95,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             Settings: the updated settings
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def change_settings(self, settings: Settings) -> Settings:
@@ -107,7 +107,7 @@ class IUIFacadeService(metaclass=ABCMeta):
         Returns:
             Settings: The updated settings
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def set_theme(self, new_theme: str) -> None:
@@ -116,4 +116,4 @@ class IUIFacadeService(metaclass=ABCMeta):
         Args:
             new_theme (str): the new theme set for the UI
         """
-        raise NotImplementedError
+        raise NotImplementedError()

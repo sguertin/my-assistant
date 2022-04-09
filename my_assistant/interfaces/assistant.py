@@ -28,7 +28,7 @@ class IAssistant(metaclass=ABCMeta):
         Returns:
             bool: True if the date is a workday
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def is_work_time(self, time_of_day: datetime = None) -> bool:
@@ -40,7 +40,7 @@ class IAssistant(metaclass=ABCMeta):
         Returns:
             bool: True if time_of_day is within work hours
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def is_work_hour(self, date: Optional[datetime] = None) -> bool:
@@ -52,7 +52,7 @@ class IAssistant(metaclass=ABCMeta):
         Returns:
             bool: True if time_of_day is within work hours
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def run(self) -> None:
@@ -69,7 +69,7 @@ class IAssistant(metaclass=ABCMeta):
         Returns:
             datetime: the next time it will take a record
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def get_next(self, now: Optional[datetime] = None) -> datetime:
@@ -81,4 +81,4 @@ class IAssistant(metaclass=ABCMeta):
         Returns:
             datetime: The next time an entry will need to be taken
         """
-        raise NotImplementedError
+        raise NotImplementedError()

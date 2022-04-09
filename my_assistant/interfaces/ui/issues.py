@@ -24,7 +24,7 @@ class IUIIssueService(metaclass=ABCMeta):
         Returns:
 
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def manage_issues(self) -> tuple[bool, list[Issue]]:
@@ -33,4 +33,4 @@ class IUIIssueService(metaclass=ABCMeta):
         Returns:
             tuple[bool, list[Issue]]: a tuple, True if the user selected 'Save', and the updated list of issues
         """
-        raise NotImplementedError
+        raise NotImplementedError()

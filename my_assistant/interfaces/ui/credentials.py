@@ -16,4 +16,4 @@ class IUICredentialsService(metaclass=ABCMeta):
         Returns:
             tuple[str, str]: the username and raise NotImplementedErrorword
         """
-        raise NotImplementedError
+        raise NotImplementedError()

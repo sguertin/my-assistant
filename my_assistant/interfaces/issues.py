@@ -29,7 +29,7 @@ class IIssueService(metaclass=ABCMeta):
         Returns:
             list[Issue]: The list of active issues
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def get_deleted_issues(self) -> list[Issue]:
@@ -38,7 +38,7 @@ class IIssueService(metaclass=ABCMeta):
         Returns:
             list[Issue]: The list of deleted issues
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def save_issues_list(
@@ -51,7 +51,7 @@ class IIssueService(metaclass=ABCMeta):
             deleted_issues_list (list[Issue], optional): The list of deleted issues. Defaults to None.
 
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def add_issue(self, issue: Issue) -> list[Issue]:
@@ -63,4 +63,4 @@ class IIssueService(metaclass=ABCMeta):
         Returns:
             list[Issue]: The new list of active issues
         """
-        raise NotImplementedError
+        raise NotImplementedError()

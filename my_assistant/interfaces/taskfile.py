@@ -34,7 +34,7 @@ class ITaskFileService(metaclass=ABCMeta):
         Returns:
             Path: path to logfile from timestamp
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def get_time_log(self, timestamp: datetime) -> TimeDayLog:
@@ -46,7 +46,7 @@ class ITaskFileService(metaclass=ABCMeta):
         Returns:
             TimeDayLog: The log for the provided timestamp
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def create_tracking_entry(
@@ -59,7 +59,7 @@ class ITaskFileService(metaclass=ABCMeta):
             entry (str): The text entry
             time_interval (timedelta): how much time elapsed since the last entry
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def get_last_entry_time(self, timestamp: datetime) -> time:
@@ -71,4 +71,4 @@ class ITaskFileService(metaclass=ABCMeta):
         Returns:
             time: the time the last entry was written
         """
-        raise NotImplementedError
+        raise NotImplementedError()

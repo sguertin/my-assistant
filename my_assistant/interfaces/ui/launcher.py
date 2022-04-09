@@ -11,4 +11,4 @@ class ILauncherService(metaclass=ABCMeta):
     @abstractmethod
     def run_main_window(self) -> None:
         """Generates the Launcher UI and initiates the application life cycle"""
-        raise NotImplementedError
+        raise NotImplementedError()

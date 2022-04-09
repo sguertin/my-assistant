@@ -21,4 +21,4 @@ class ILoggingFactory(metaclass=ABCMeta):
         Returns:
             Logger: The configured logger
         """
-        raise NotImplementedError
+        raise NotImplementedError()

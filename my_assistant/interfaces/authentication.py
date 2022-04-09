@@ -16,7 +16,7 @@ class IAuthenticationProvider(metaclass=ABCMeta):
     @abstractmethod
     def clear_auth(self) -> None:
         """Clears the current authentication token"""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def get_auth(self) -> str:
@@ -25,7 +25,7 @@ class IAuthenticationProvider(metaclass=ABCMeta):
         Returns:
             str: authentication token
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def set_auth(self, user_name: str, password: str):
@@ -35,4 +35,4 @@ class IAuthenticationProvider(metaclass=ABCMeta):
             user_name (str): The user name
             password (str): the user's password
         """
-        raise NotImplementedError
+        raise NotImplementedError()

@@ -30,7 +30,7 @@ class IUIWarningService(metaclass=ABCMeta):
         Returns:
             bool: True if the user selects 'Proceed'
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def warning_prompt(self, msg: str):
@@ -39,7 +39,7 @@ class IUIWarningService(metaclass=ABCMeta):
         Args:
             msg (str): The message to be displayed
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def warning_retry_prompt(self, msg: str) -> bool:
@@ -51,4 +51,4 @@ class IUIWarningService(metaclass=ABCMeta):
         Returns:
             bool: True if the user selects 'Retry'
         """
-        raise NotImplementedError
+        raise NotImplementedError()

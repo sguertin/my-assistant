@@ -20,4 +20,4 @@ class IUIThemeService(metaclass=ABCMeta):
         Returns:
             Settings: the updated settings
         """
-        raise NotImplementedError
+        raise NotImplementedError()
