@@ -75,7 +75,7 @@ class SettingsService(ISettingsService):
         try:
             self.validate(settings)
             with open(SETTINGS_FILE, "w+") as f:
-                f.write(settings.to_json())
+                f.write(settings.to_json(indent=4))
             self.settings = settings
         except OSError as err:
             self.log.error(err)

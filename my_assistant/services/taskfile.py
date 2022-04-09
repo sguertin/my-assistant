@@ -46,7 +46,7 @@ class TaskFileService(ITaskFileService):
         )
         try:
             with open(self.get_time_log_path(timestamp), "w") as f:
-                f.write(task_log.to_json())
+                f.write(task_log.to_json(indent=4))
         except OSError as err:
             self.log.error(err)
             raise
