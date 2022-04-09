@@ -18,6 +18,8 @@ class SettingsService(ISettingsService):
 
     def __init__(self, logging_factory: ILoggingFactory):
         self._log = logging_factory.get_logger("SettingsService")
+        if not WORKING_DIR.exists():
+            makedirs(WORKING_DIR)
 
     def get_settings(self) -> Settings:
         if self._settings is None:
@@ -45,8 +47,6 @@ class SettingsService(ISettingsService):
     def save(self, settings: Settings) -> None:
         try:
             self.validate(settings)
-            if not WORKING_DIR.exists():
-                makedirs(WORKING_DIR)
             with open(SETTINGS_FILE, "w+") as f:
                 f.write(settings.to_json())
         except ValidationError as vex:
