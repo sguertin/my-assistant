@@ -18,12 +18,12 @@ from my_assistant.interfaces.ui_settings import IUISettingsService
 from my_assistant.interfaces.ui_theme import IUIThemeService
 from my_assistant.interfaces.ui_warning import IUIWarningService
 from my_assistant.providers.authentication import BasicAuthenticationProvider
-from my_assistant.services.ui_facade import UIFacadeService
 from my_assistant.services.assistant import Assistant
 from my_assistant.services.issues import IssueService
 from my_assistant.services.settings import SettingsService
 from my_assistant.services.taskfile import TaskFileService
 from my_assistant.services.ui_credentials import UICredentialsService
+from my_assistant.services.ui_facade import UIFacadeService
 from my_assistant.services.ui_issues import UIIssueService
 from my_assistant.services.ui_launcher import UILauncherService
 from my_assistant.services.ui_settings import UISettingsService
@@ -53,11 +53,11 @@ class DependencyFactory(IDependencyFactory):
             settings_service: ISettingsService = SettingsService(log_factory)
             settings = settings_service.get_settings()
             log_factory.update_level(settings.log_level)
-
+            auth_provider: IAuthenticationProvider = BasicAuthenticationProvider()
             time_tracking_factory: ITimeTrackingFactory = TimeTrackingFactory()
+
             task_service: ITaskFileService = TaskFileService(log_factory)
 
-            auth_provider: IAuthenticationProvider = BasicAuthenticationProvider()
             issue_service: IIssueService = IssueService(log_factory)
             ui_warning_service: IUIWarningService = UIWarningService(log_factory)
             ui_issue_service: IUIIssueService = UIIssueService(
@@ -88,7 +88,6 @@ class DependencyFactory(IDependencyFactory):
                     auth_provider, ui_service, log_factory, settings_service
                 )
             )
-
             assistant: IAssistant = Assistant(
                 time_tracking,
                 ui_service,
