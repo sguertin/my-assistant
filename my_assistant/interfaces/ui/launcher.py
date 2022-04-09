@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 
 
-class ILauncherService(metaclass=ABCMeta):
+class IUILauncherService(metaclass=ABCMeta):
     @classmethod
     def __subclasshook__(cls, subclass):
         return (

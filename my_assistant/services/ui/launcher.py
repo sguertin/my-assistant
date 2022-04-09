@@ -6,11 +6,11 @@ from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
-from my_assistant.interfaces.ui.launcher import ILauncherService
+from my_assistant.interfaces.ui.launcher import IUILauncherService
 from my_assistant.models.settings import Settings
 
 
-class LauncherService(ILauncherService):
+class UILauncherService(IUILauncherService):
     assistant: IAssistant
     ui_provider: IUIFacadeService
     dependency_factory: IDependencyFactory
