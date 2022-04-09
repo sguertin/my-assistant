@@ -15,7 +15,7 @@ class LoggingFactory(ILoggingFactory):
         self._log_level = log_level
         logging.basicConfig(
             datefmt="[%Y-%m-%d %H:%M:%S]",
-            format="%(message)s",
+            format="[%(name)s] - %(message)s",
             handlers=[RichHandler(rich_tracebacks=True)],
             level=LogLevel.NOTSET,
         )
