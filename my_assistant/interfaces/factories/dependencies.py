@@ -20,7 +20,7 @@ class IDependencyFactory(metaclass=ABCMeta):
         self,
         settings: Optional[Settings] = None,
     ) -> tuple[IAssistant, IUIFacadeService, ISettingsService]:
-        """Creates Dependencies needed to run the LauncherService
+        """Creates Dependencies needed to run the UILauncherService
 
         Args:
             settings (Optional[Settings], optional): The application settings, will load from file system if None. Defaults to None.
