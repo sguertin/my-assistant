@@ -3,9 +3,11 @@ import json
 from logging import Logger
 
 import requests
+from models.settings import Settings
 
 from my_assistant.interfaces.authentication import IAuthenticationProvider
 from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.models.issues import Issue
@@ -27,12 +29,12 @@ class JiraService(ITimeTrackingService):
         auth_provider: IAuthenticationProvider,
         ui_provider: IUIFacadeService,
         logging_factory: ILoggingFactory,
-        settings: Settings,
+        settings_service: ISettingsService,
     ):
         self.auth_provider = auth_provider
         self.ui_provider = ui_provider
         self.last_status = 0
-        self.settings = settings
+        self.settings = settings_service.get_settings()
         self.log = logging_factory.get_logger("JiraService")
 
     def base_url(self) -> str:
@@ -135,7 +137,7 @@ class MockTimeTrackingService(ITimeTrackingService):
         auth_provider: IAuthenticationProvider,
         ui_provider: IUIFacadeService,
         logging_factory: ILoggingFactory,
-        settings: Settings,
+        settings_service: ISettingsService,
     ):
         self.log = logging_factory.get_logger("MockTimeTrackingService")
 

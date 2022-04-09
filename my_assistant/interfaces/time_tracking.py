@@ -22,4 +22,4 @@ class ITimeTrackingService(metaclass=ABCMeta):
             comment (str, optional): Optional comment to include in worklog entry. Defaults to None.
             time_interval (timedelta, optional): The amount of time being logged. Defaults to None (will use standard time interval from settings).
         """
-        raise NotImplementedError
+        raise NotImplementedError()

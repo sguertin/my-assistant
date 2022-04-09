@@ -23,4 +23,14 @@ class ITimeTrackingFactory(metaclass=ABCMeta):
         logging_factory: ILoggingFactory,
         settings: Settings,
     ) -> ITimeTrackingService:
-        raise NotImplementedError
+        """Constructs an instance of the TimeTrackingService
+
+        Args:
+            auth_provider (IAuthenticationProvider): The authentication provider
+            ui_provider (IUIProvider): the ui provider
+            settings (Settings): the application settings
+
+        Returns:
+            ITimeTrackingService: the constructed TimeTrackingService
+        """
+        raise NotImplementedError()

@@ -15,4 +15,4 @@ class IUITimeTrackingService(metaclass=ABCMeta):
         Returns:
             tuple[Issue, str]: The issue having time recorded against and the comment
         """
-        raise NotImplementedError
+        raise NotImplementedError()
