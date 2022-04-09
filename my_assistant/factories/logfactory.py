@@ -5,15 +5,14 @@ from logging import Logger
 from rich.logging import RichHandler
 
 from my_assistant.constants import LogLevel
-from my_assistant.interfaces.logfactory import ILoggingFactory
-from my_assistant.models.settings import SettingsService
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 
 
 class LoggingFactory(ILoggingFactory):
-    log_level: LogLevel
+    _log_level: LogLevel
 
     def __init__(self, log_level: LogLevel):
-        self.log_level = log_level
+        self._log_level = log_level
         logging.basicConfig(
             datefmt="[%Y-%m-%d %H:%M:%S]",
             format="%(message)s",
@@ -21,7 +20,10 @@ class LoggingFactory(ILoggingFactory):
             level=LogLevel.NOTSET,
         )
 
+    def update_level(self, log_Level: LogLevel):
+        self._log_level = log_Level
+
     def get_logger(self, name: str) -> Logger:
         log = logging.getLogger(name)
-        log.setLevel(self.log_level)
+        log.setLevel(self._log_level)
         return log

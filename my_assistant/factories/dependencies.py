@@ -6,7 +6,7 @@ from my_assistant.interfaces.authentication import IAuthenticationProvider
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.interfaces.factories.time_tracking import ITimeTrackingFactory
 from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.factories.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
@@ -36,7 +36,7 @@ class DependencyFactory(IDependencyFactory):
     ) -> tuple[IAssistant, IUIFacadeService, ISettingsService]:
         logging_factory: ILoggingFactory = LoggingFactory(LogLevel.INFO)
         settings_service: ISettingsService = SettingsService(logging_factory)
-
+        logging_factory.update_level(settings_service.get_settings().log_level)
         time_tracking_factory: ITimeTrackingFactory = TimeTrackingFactory()
         task_service: ITaskFileService = TaskFileService()
 
@@ -52,7 +52,6 @@ class DependencyFactory(IDependencyFactory):
         ui_credential_service: IUICredentialsService = UICredentialsService(
             logging_factory
         )
-
         ui_theme_service: IUIThemeService = UIThemeService(logging_factory)
         ui_settings_service: IUISettingsService = UISettingsService(
             ui_warning_service, settings_service, logging_factory
