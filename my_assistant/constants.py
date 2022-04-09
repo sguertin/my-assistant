@@ -1,5 +1,5 @@
 from enum import IntEnum
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
 from os import getenv
 from pathlib import Path
 
@@ -25,6 +25,7 @@ DAYS_OF_WEEK = {
     "Sunday": 6,
 }
 LOGGING_LEVELS = {
+    "NotSet": NOTSET,
     "Critical": CRITICAL,
     "Error": ERROR,
     "Warning": WARNING,
@@ -34,6 +35,7 @@ LOGGING_LEVELS = {
 
 
 class LogLevel(IntEnum):
+    NOTSET = NOTSET
     CRITICAL = CRITICAL
     ERROR = ERROR
     WARNING = WARNING
