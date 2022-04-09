@@ -1,9 +1,25 @@
+from logging import Logger
 from my_assistant.constants import ISSUES_LIST, DELETED_ISSUES_LIST
 from my_assistant.interfaces.issues import IIssueService
+from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.models.issues import Issue
 
 
 class IssueService(IIssueService):
+    log: Logger
+
+    def __init__(self, log_factory: ILoggingFactory):
+        self.log = log_factory.get_logger("IssueService")
+        if not ISSUES_LIST.exists():
+            self.log.info(f"Issues list not found, creating new list")
+            with open(ISSUES_LIST, "w") as f:
+                f.write("[]")
+
+        if not DELETED_ISSUES_LIST.exists():
+            self.log.info(f"Deleted Issues list not found, creating new list")
+            with open(DELETED_ISSUES_LIST, "w") as f:
+                f.write("[]")
+
     def get_issues_list(self) -> list[Issue]:
         with open(ISSUES_LIST, "r") as f:
             return Issue.schema().loads(f.read(), many=True)
