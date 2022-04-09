@@ -1,15 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
-from os import mkdir
-from dataclasses_json import DataClassJsonMixin, LetterCase
 
-from my_assistant.constants import (
-    HOUR_RANGE,
-    MINUTE_RANGE,
-    SETTINGS_FILE,
-    WORKING_DIR,
-    LogLevel,
-)
+from dataclasses_json import DataClassJsonMixin
+
+from my_assistant.constants import LogLevel
 
 
 @dataclass
@@ -64,4 +58,4 @@ class Settings(DataClassJsonMixin):
         return self.end_time - self.start_time
 
     def __str__(self):
-        return self.to_json(indent=4)
+        return self.to_json()

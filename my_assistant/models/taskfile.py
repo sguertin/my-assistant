@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from datetime import datetime, date, time
+from datetime import datetime, time
 
-from dataclasses_json import dataclass_json, LetterCase
+from dataclasses_json import DataClassJsonMixin
 
 
-@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
-class TimeEntry:
+class TimeEntry(DataClassJsonMixin):
     start_time: time
     end_time: time
     entry: str
@@ -17,9 +16,8 @@ class TimeEntry:
         self.entry = entry
 
 
-@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
-class TimeDayLog:
+class TimeDayLog(DataClassJsonMixin):
     log_date: datetime
     file_name: str
     time_entries: list[TimeEntry]
@@ -28,4 +26,4 @@ class TimeDayLog:
         today = datetime.today()
         self.log_date = today
         self.time_entries = []
-        self.file_name = f'TimeTracking-{today.year}-{today.month}-{today.day}.log'
+        self.file_name = f"TimeTracking-{today.year}-{today.month}-{today.day}.log"
