@@ -8,6 +8,9 @@ try:
 except:
     WORKING_DIR: Path = Path(getenv("HOME"), "TimeTracking")
 
+NEEDS_AUTH_CODE = 901
+FAILED_AUTH = 403
+
 ISSUES_LIST: Path = Path(WORKING_DIR, "issues.json")
 DELETED_ISSUES_LIST: Path = Path(WORKING_DIR, "deletedIssues.json")
 SETTINGS_FILE: Path = Path(WORKING_DIR, "settings.json")

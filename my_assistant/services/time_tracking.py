@@ -3,8 +3,8 @@ import json
 from logging import Logger
 
 import requests
-from models.settings import Settings
 
+from my_assistant.constants import NEEDS_AUTH_CODE, FAILED_AUTH
 from my_assistant.interfaces.authentication import IAuthenticationProvider
 from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
@@ -13,9 +13,6 @@ from my_assistant.interfaces.ui.facade import IUIFacadeService
 from my_assistant.models.issues import Issue
 from my_assistant.models.jira import JiraResponse
 from my_assistant.models.settings import Settings
-
-NEEDS_AUTH_CODE = 901
-FAILED_AUTH = 403
 
 
 class JiraService(ITimeTrackingService):
