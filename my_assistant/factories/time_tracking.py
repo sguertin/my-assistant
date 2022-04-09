@@ -3,7 +3,7 @@ from my_assistant.interfaces.factories.time_tracking import ITimeTrackingFactory
 from my_assistant.interfaces.logfactory import ILoggingFactory
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
-from my_assistant.models.settings import Settings
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.services.time_tracking import JiraService, MockTimeTrackingService
 
 
@@ -13,21 +13,14 @@ class TimeTrackingFactory(ITimeTrackingFactory):
         auth_provider: IAuthenticationProvider,
         ui_provider: IUIFacadeService,
         logging_factory: ILoggingFactory,
-        settings: Settings,
+        settings_service: ISettingsService,
     ) -> ITimeTrackingService:
-        """Constructs an instance of the TimeTrackingService
-
-        Args:
-            auth_provider (IAuthenticationProvider): The authentication provider
-            ui_provider (IUIProvider): the ui provider
-            settings (Settings): the application settings
-
-        Returns:
-            ITimeTrackingService: the constructed TimeTrackingService
-        """
+        settings = settings_service.get_settings()
         if settings.enable_jira:
-            return JiraService(auth_provider, ui_provider, logging_factory, settings)
+            return JiraService(
+                auth_provider, ui_provider, logging_factory, settings_service
+            )
         else:
             return MockTimeTrackingService(
-                auth_provider, ui_provider, logging_factory, settings
+                auth_provider, ui_provider, logging_factory, settings_service
             )
