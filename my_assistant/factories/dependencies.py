@@ -1,14 +1,13 @@
-from typing import Optional
-from models.settings import Settings
+from my_assistant.constants import LogLevel
 from my_assistant.factories.logfactory import LoggingFactory
 from my_assistant.factories.time_tracking import TimeTrackingFactory
-
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.authentication import IAuthenticationProvider
 from my_assistant.interfaces.factories.dependencies import IDependencyFactory
 from my_assistant.interfaces.factories.time_tracking import ITimeTrackingFactory
 from my_assistant.interfaces.issues import IIssueService
 from my_assistant.interfaces.logfactory import ILoggingFactory
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.taskfile import ITaskFileService
 from my_assistant.interfaces.time_tracking import ITimeTrackingService
 from my_assistant.interfaces.ui.credentials import IUICredentialsService
@@ -17,11 +16,11 @@ from my_assistant.interfaces.ui.issues import IUIIssueService
 from my_assistant.interfaces.ui.settings import IUISettingsService
 from my_assistant.interfaces.ui.theme import IUIThemeService
 from my_assistant.interfaces.ui.warning import IUIWarningService
-
 from my_assistant.providers.authentication import BasicAuthenticationProvider
 from my_assistant.providers.ui import UIFacadeService
 from my_assistant.services.assistant import Assistant
 from my_assistant.services.issues import IssueService
+from my_assistant.services.settings import SettingsService
 from my_assistant.services.taskfile import TaskFileService
 from my_assistant.services.ui.credentials import UICredentialsService
 from my_assistant.services.ui.issues import UIIssueService
@@ -34,15 +33,15 @@ from my_assistant.services.ui.warning import UIWarningService
 class DependencyFactory(IDependencyFactory):
     def create_dependencies(
         self,
-        settings: Optional[Settings] = None,
-    ) -> tuple[IAssistant, IUIFacadeService, Settings]:
-        if settings is None:
-            settings: Settings = Settings.load()
+    ) -> tuple[IAssistant, IUIFacadeService, ISettingsService]:
+        logging_factory: ILoggingFactory = LoggingFactory(LogLevel.INFO)
+        settings_service: ISettingsService = SettingsService(logging_factory)
+
         time_tracking_factory: ITimeTrackingFactory = TimeTrackingFactory()
-        logging_factory: ILoggingFactory = LoggingFactory(settings)
+        task_service: ITaskFileService = TaskFileService()
 
         auth_provider: IAuthenticationProvider = BasicAuthenticationProvider()
-        issue_service: IIssueService = IssueService()
+        issue_service: IIssueService = IssueService(logging_factory)
         ui_warning_service: IUIWarningService = UIWarningService()
         ui_issue_service: IUIIssueService = UIIssueService(
             issue_service, ui_warning_service
@@ -62,10 +61,9 @@ class DependencyFactory(IDependencyFactory):
             ui_theme_service,
             ui_settings_service,
         )
-        task_service: ITaskFileService = TaskFileService()
         time_tracking: ITimeTrackingService = (
             time_tracking_factory.get_time_tracking_service(
-                auth_provider, ui_service, logging_factory, settings
+                auth_provider, ui_service, logging_factory, settings_service
             )
         )
 
@@ -75,6 +73,6 @@ class DependencyFactory(IDependencyFactory):
             task_service,
             issue_service,
             logging_factory,
-            settings,
+            settings_service,
         )
-        return assistant, ui_service, settings
+        return assistant, ui_service, settings_service

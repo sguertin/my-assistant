@@ -3,6 +3,7 @@ from typing import Optional
 from models.settings import Settings
 
 from my_assistant.interfaces.assistant import IAssistant
+from my_assistant.interfaces.settings import ISettingsService
 from my_assistant.interfaces.ui.facade import IUIFacadeService
 
 
@@ -18,13 +19,13 @@ class IDependencyFactory(metaclass=ABCMeta):
     def create_dependencies(
         self,
         settings: Optional[Settings] = None,
-    ) -> tuple[IAssistant, IUIFacadeService, Settings]:
+    ) -> tuple[IAssistant, IUIFacadeService, ISettingsService]:
         """Creates Dependencies needed to run the LauncherService
 
         Args:
             settings (Optional[Settings], optional): The application settings, will load from file system if None. Defaults to None.
 
         Returns:
-            tuple[IAssistant, IUIFacadeService, Settings]: Initialized services needed for Launcher Service
+            tuple[IAssistant, IUIFacadeService, ISettingsService]: Initialized services needed for Launcher Service
         """
-        raise NotImplementedError
+        raise NotImplementedError()
