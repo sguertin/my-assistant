@@ -7,6 +7,8 @@ from my_assistant.models.issues import Issue
 
 
 class IUIFacadeService(metaclass=ABCMeta):
+    """Facade class to provide a uniform collection of methods for serving the UI"""
+
     @classmethod
     def __subclasshook__(cls, subclass):
         return (
