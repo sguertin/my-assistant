@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, time
 from logging import Logger
+from threading import Semaphore
 from typing import Optional
 
 from my_assistant.interfaces.assistant import IAssistant
@@ -22,6 +23,7 @@ class Assistant(IAssistant):
     log: Logger
     time_interval: timedelta
     last_entry_time: time
+    lock: Semaphore
 
     @property
     def issue_list(self) -> list[Issue]:
@@ -50,6 +52,7 @@ class Assistant(IAssistant):
             minutes=self.settings.interval_minutes,
         )
         self.ui_provider.set_theme(self.settings.theme)
+        self.lock = Semaphore()
 
     def get_next(self, now: Optional[datetime] = None) -> datetime:
         """Calculates the next time an entry should be recorded
@@ -90,27 +93,32 @@ class Assistant(IAssistant):
     def is_work_day(date: datetime) -> bool:
         return date.weekday() < 5
 
-    def is_work_hour(self, date: datetime = None) -> bool:
-        if date is None:
-            date = datetime.now()
-        start_of_day = datetime(
-            date.year,
-            date.month,
-            date.day,
+    @property
+    def start_of_day(self) -> datetime:
+        now = datetime.now()
+        return datetime(
+            now.year,
+            now.month,
+            now.day,
             self.settings.start_hour,
             self.settings.start_minute,
         )
-        end_of_day = (
-            datetime(
-                date.year,
-                date.month,
-                date.day,
-                self.settings.end_hour,
-                self.settings.end_minute,
-            )
-            + self.time_interval
+
+    @property
+    def end_of_day(self) -> datetime:
+        now = datetime.now()
+        return datetime(
+            now.year,
+            now.month,
+            now.day,
+            self.settings.end_hour,
+            self.settings.end_minute,
         )
-        return start_of_day <= date <= end_of_day
+
+    def is_work_hour(self, date: datetime = None) -> bool:
+        if date is None:
+            date = datetime.now()
+        return self.start_of_day <= date <= (self.end_of_day + self.time_interval)
 
     def is_work_time(self, time_of_day: datetime = None) -> bool:
         if time_of_day is None:
@@ -167,13 +175,19 @@ class Assistant(IAssistant):
         )
         if now >= next_timestamp:
             if self.is_work_day(now) and self.is_work_hour(now):
+                self.log.debug("self.assistant.lock.acquire()")
+                self.lock.acquire()
                 self.main_prompt(next_timestamp)
+                self.log.debug("self.assistant.lock.release()")
+                self.lock.release()
                 # if Prompt is left open and more than one hour passes
                 # it will iterate through the hours that passed in between
                 while (
                     next_timestamp + self.time_interval
                 ) < datetime.now() and self.is_work_hour(next_timestamp):
                     next_timestamp = self.main_prompt(next_timestamp)
+            elif not self.is_work_day(now):
+                self.log.info("%s is not a working day", now.strftime("%Y-%m-%d"))
             else:
                 self.log.info(
                     "%s is not within working hours", now.strftime("%Y-%m-%d %H:%M:%S")

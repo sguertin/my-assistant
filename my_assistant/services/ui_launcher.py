@@ -1,5 +1,6 @@
 from datetime import datetime
 from logging import Logger
+from threading import Thread
 
 import PySimpleGUI as sg
 
@@ -45,21 +46,37 @@ class UILauncherService(IUILauncherService):
                 [sg.Button("Close", size=button_size)],
             ],
         )
-        while True:
-            event, _ = window.read(timeout=30000)
-            self.log.info("Event %s received", event)
-            if event == "Record":
-                self.assistant.main_prompt(datetime.now())
-            elif event == "Issues":
-                self.ui_provider.manage_issues()
-            elif event == "Settings":
-                self.ui_provider.change_settings(self.settings)
-            elif event == "Theme":
-                self.ui_provider.manage_theme(self.settings)
-            elif event in (sg.WIN_CLOSED, "Close"):
-                window.close()
-                break
-            self.assistant.run()
+        assistant_thread = Thread(target=self._run_assistant)
+
+        try:
+            assistant_thread.start()
+            while True:
+                event, _ = window.read(timeout=30000)
+                self.log.info("Event %s received", event)
+                if event == "Record":
+                    self.log.debug("self.assistant.lock.acquire()")
+                    self.assistant.lock.acquire()
+                    self.assistant.main_prompt(datetime.now())
+                    self.log.debug("self.assistant.lock.release()")
+                    self.assistant.lock.release()
+                elif event == "Issues":
+                    self.ui_provider.manage_issues()
+                elif event == "Settings":
+                    self.ui_provider.change_settings(self.settings)
+                elif event == "Theme":
+                    self.ui_provider.manage_theme(self.settings)
+                elif event in (sg.WIN_CLOSED, "Close"):
+                    window.close()
+                    break
+        except Exception as ex:
+            self.log.exception(ex)
+            raise
+        finally:
+            assistant_thread.join()
+
+    def _run_assistant(self):
+        self.log.debug("Thread calling for assistant to")
+        self.assistant.run()
 
     def update_dependencies(
         self,

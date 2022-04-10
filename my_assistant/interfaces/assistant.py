@@ -1,10 +1,13 @@
 from abc import ABCMeta, abstractmethod, abstractstaticmethod
 from datetime import datetime
+from threading import Semaphore
 from typing import Optional
 
 
 class IAssistant(metaclass=ABCMeta):
     """interface IAssistant - Assistant Service for handling decision making on time recording activities"""
+
+    lock: Semaphore
 
     @classmethod
     def __subclasshook__(cls, subclass):
