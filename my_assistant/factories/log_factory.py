@@ -1,10 +1,11 @@
+from datetime import datetime
 import logging
 import logging.config
-from logging import Logger
+from logging import Logger, FileHandler
 
 from rich.logging import RichHandler
 
-from my_assistant.constants import LogLevel
+from my_assistant.constants import LogLevel, WORKING_DIR
 from my_assistant.interfaces.log_factory import ILoggingFactory
 
 
@@ -13,10 +14,12 @@ class LoggingFactory(ILoggingFactory):
 
     def __init__(self, log_level: LogLevel):
         self._log_level = log_level
+        time_stamp = datetime.now().strftime("%Y-%m-%d")
+        log_file = WORKING_DIR / f"MyAssistant-{time_stamp}.log"
         logging.basicConfig(
             datefmt="[%Y-%m-%d %H:%M:%S]",
             format="%(name)-20s - %(message)s",
-            handlers=[RichHandler(rich_tracebacks=True)],
+            handlers=[RichHandler(rich_tracebacks=True), FileHandler(log_file, "w+")],
             level=LogLevel.NOTSET,
         )
 
