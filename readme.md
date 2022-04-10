@@ -1,4 +1,4 @@
-# my-assistant - A time tracking application built in Python 3.9
+# my-assistant - A time tracking application built in Python 3.10
 
 ## Overview
 
