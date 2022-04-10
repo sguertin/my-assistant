@@ -96,7 +96,7 @@ class DependencyFactory(IDependencyFactory):
                 log_factory,
                 settings_service,
             )
-        except Exception as err:
-            log.error(err)
+        except Exception as ex:
+            log.exception(ex)
             raise
         return assistant, ui_service, settings_service, log_factory

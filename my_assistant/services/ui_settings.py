@@ -51,9 +51,7 @@ class UISettingsService(IUISettingsService):
             [value for day, value in DAYS_OF_WEEK.items() if values[day]],
         )
 
-    def change_settings(
-        self, settings: Settings, update_dependencies: Callable
-    ) -> Settings:
+    def change_settings(self, settings: Settings) -> Settings:
         original_settings = Settings.from_dict(settings.to_dict())
         day_checkboxes = []
         for day in DAYS_OF_WEEK.keys():
@@ -118,9 +116,9 @@ class UISettingsService(IUISettingsService):
                     self.settings_service.save(settings)
                     window.close()
                     return settings
-                except ValidationError as err:
-                    self.log.error(err)
-                    self.ui_warning_service.warning_prompt(err.message)
+                except ValidationError as ex:
+                    self.log.exception(ex)
+                    self.ui_warning_service.warning_prompt(ex.message)
             elif event in ("Cancel", sg.WINDOW_CLOSED):
                 window.close()
                 return original_settings

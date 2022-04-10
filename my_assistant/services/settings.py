@@ -22,8 +22,8 @@ class SettingsService(ISettingsService):
             if not WORKING_DIR.exists():
                 makedirs(WORKING_DIR)
                 self.log.info("Created working directory at: %s", WORKING_DIR)
-        except OSError as err:
-            self.log.error(err)
+        except OSError as ex:
+            self.log.exception(ex)
 
     def get_settings(self) -> Settings:
         if self.settings is None:
@@ -62,8 +62,8 @@ class SettingsService(ISettingsService):
                         self.settings = Settings.from_json(f.read())
                         self.last_modified = last_modified
             return deepcopy(self.settings)
-        except OSError as err:
-            self.log.error(err)
+        except OSError as ex:
+            self.log.exception(ex)
             raise
 
     def restore_defaults(self) -> Settings:
@@ -77,11 +77,11 @@ class SettingsService(ISettingsService):
             with open(SETTINGS_FILE, "w+") as f:
                 f.write(settings.to_json(indent=4))
             self.settings = settings
-        except OSError as err:
-            self.log.error(err)
+        except OSError as ex:
+            self.log.exception(ex)
             raise
-        except ValidationError as vex:
-            self.log.error(vex)
+        except ValidationError as ex:
+            self.log.exception(ex)
             raise
 
     def validate(self, settings: Settings) -> None:

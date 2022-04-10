@@ -78,13 +78,13 @@ class UILauncherService(IUILauncherService):
         self.log.debug("Thread calling for assistant to")
         self.assistant.run()
 
-    def update_dependencies(
-        self,
-        assistant: IAssistant,
-        ui_provider: IUIFacadeService,
-        settings_service: ISettingsService,
-        log_factory: ILoggingFactory,
-    ):
+    def update_dependencies(self, settings: Settings):
+        (
+            assistant,
+            ui_provider,
+            settings_service,
+            log_factory,
+        ) = self.dependency_factory.create_dependencies(settings)
         self.assistant = assistant
         self.ui_provider = ui_provider
         self.settings = settings_service.get_settings()

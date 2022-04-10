@@ -12,5 +12,5 @@ try:
     launcher: IUILauncherService = dependency_factory.create_launcher()
     launcher.run_main_window()
     log.info("Closing My Assistant...")
-except Exception as e:
-    log.error(e)
+except Exception as ex:
+    log.exception(ex)

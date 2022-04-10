@@ -31,8 +31,8 @@ class TaskFileService(ITaskFileService):
             else:
                 with open(task_file, "r") as f:
                     task_log = TimeDayLog.from_json(f.read())
-        except JSONDecodeError as err:
-            self.log.error(err)
+        except JSONDecodeError as ex:
+            self.log.exception(ex)
             task_log = TimeDayLog()
         return task_log
 
@@ -47,8 +47,8 @@ class TaskFileService(ITaskFileService):
         try:
             with open(self.get_time_log_path(timestamp), "w") as f:
                 f.write(task_log.to_json(indent=4))
-        except OSError as err:
-            self.log.error(err)
+        except OSError as ex:
+            self.log.exception(ex)
             raise
 
     def get_last_entry_time(self, timestamp: datetime) -> Optional[time]:

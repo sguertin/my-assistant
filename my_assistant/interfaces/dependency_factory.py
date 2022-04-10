@@ -1,11 +1,12 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
-from my_assistant.interfaces.ui_launcher import IUILauncherService
-from my_assistant.models.settings import Settings
 
 from my_assistant.interfaces.assistant import IAssistant
+from my_assistant.interfaces.log_factory import ILoggingFactory
 from my_assistant.interfaces.settings import ISettingsService
+from my_assistant.interfaces.ui_launcher import IUILauncherService
 from my_assistant.interfaces.ui_facade import IUIFacadeService
+from my_assistant.models.settings import Settings
 
 
 class IDependencyFactory(metaclass=ABCMeta):
@@ -30,7 +31,7 @@ class IDependencyFactory(metaclass=ABCMeta):
     def create_dependencies(
         self,
         settings: Optional[Settings] = None,
-    ) -> tuple[IAssistant, IUIFacadeService, ISettingsService]:
+    ) -> tuple[IAssistant, IUIFacadeService, ISettingsService, ILoggingFactory]:
         """Creates Dependencies needed to run the UILauncherService
 
         Args:
