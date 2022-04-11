@@ -12,5 +12,6 @@ This is a basic PySimpleGUI application built to help automate tracking work log
 
 ## Future Updates
 
-- Make the time interval to prompt configurable
-- Make Jira integration optional by configuration
+- Make work days of the week configurable
+- Update logic to work for 3rd shift, i.e. a work day that crosses midnight
+- Other integrations?
