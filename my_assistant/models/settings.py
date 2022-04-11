@@ -16,7 +16,7 @@ class Settings(DataClassJsonMixin):
     end_minute: int = 0
     interval_hours: int = 1
     interval_minutes: int = 0
-    enable_jira: bool = True
+    enable_jira: bool = False
     log_level: LogLevel = LogLevel.INFO
     days_of_week: frozenset[int] = field(
         default_factory=lambda: frozenset({0, 1, 2, 3, 4})
