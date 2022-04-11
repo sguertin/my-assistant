@@ -10,6 +10,12 @@ This is a basic PySimpleGUI application built to help automate tracking work log
 - Automatically prompts every hour to log time
 - A backup file with automatically be stored with all your time entries if the integration fails
 
+## 3rd Party Libraries
+
+- [PySimpleGUI](https://pysimplegui.readthedocs.io/en/latest/) for building the entire GUI
+- [requests](https://docs.python-requests.org/en/latest/) for sending requests to Jira
+- [Rich](https://github.com/Textualize/rich) for console output during development
+
 ## Future Updates
 
 - Make work days of the week configurable
