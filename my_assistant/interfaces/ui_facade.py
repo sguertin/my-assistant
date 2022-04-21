@@ -59,11 +59,12 @@ class IUIFacadeService(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
+    def record_time(self, timestamp: datetime, manual_override: bool = False) -> tuple[Issue, str]:
         """Creates a prompt to capture time worked
 
         Args:
             timestamp (datetime): The timestamp for the time recording
+            manual_override (bool): Indicates if the recording was a manual override
 
         Returns:
             tuple[Issue, str]: the issue and a comment

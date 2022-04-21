@@ -51,8 +51,8 @@ class UIFacadeService:
     def warning_prompt(self, msg: str) -> None:
         self.ui_warning_service.warning_prompt(msg)
 
-    def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
-        return self.ui_time_tracking_service.record_time(timestamp)
+    def record_time(self, timestamp: datetime, manual_override: bool = False) -> tuple[Issue, str]:
+        return self.ui_time_tracking_service.record_time(timestamp, manual_override)
 
     def credentials_prompt(self) -> tuple[str, str]:
         return self.ui_credentials_service.credentials_prompt()

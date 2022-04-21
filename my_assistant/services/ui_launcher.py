@@ -55,10 +55,8 @@ class UILauncherService(IUILauncherService):
                 self.log.info("Event %s received", event)
                 if event == "Record":
                     self.log.debug("self.assistant.lock.acquire()")
-                    self.assistant.lock.acquire()
-                    self.assistant.main_prompt(datetime.now())
-                    self.log.debug("self.assistant.lock.release()")
-                    self.assistant.lock.release()
+                    self.assistant.main_prompt(datetime.now(), True)
+                    self.log.debug("self.assistant.lock.release()")                    
                 elif event == "Issues":
                     self.ui_provider.manage_issues()
                 elif event == "Settings":

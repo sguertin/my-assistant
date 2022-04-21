@@ -23,15 +23,16 @@ class UITimeTrackingService(IUITimeTrackingService):
         self.ui_issue_service = ui_issue_service
         self.log = log_factory.get_logger("UITimeTrackingService")
 
-    def record_time(self, timestamp: datetime) -> tuple[Issue, str]:
+    def record_time(self, timestamp: datetime, manual_override: bool = False) -> tuple[Issue, str]:
         entries = self.issue_service.get_issues_list()
         combo = sg.Combo(entries, key="-ENTRY-")
+        override_text = 'MANUAL TIME ENTRY: ' if manual_override else ''
         window = sg.Window(
             f"Time Tracking",
             [
                 [
                     sg.T(
-                        f"What have you been working on for {timestamp.hour - 1}:00 - {timestamp.hour}:00?"
+                        f"{override_text}What have you been working on for {timestamp.hour - 1}:00 - {timestamp.hour}:00?"
                     )
                 ],
                 [combo, sg.Button(button_text="Manage Issues", key="ManageIssues")],
