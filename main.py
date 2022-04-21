@@ -8,9 +8,9 @@ log = LoggingFactory(LogLevel.INFO).get_logger("Main")
 
 dependency_factory: IDependencyFactory = DependencyFactory()
 try:
-    log.info("Starting My Assistant...")
+    log.info("Starting Assistant...")
     launcher: IUILauncherService = dependency_factory.create_launcher()
     launcher.run_main_window()
-    log.info("Closing My Assistant...")
+    log.info("Closing Assistant...")
 except Exception as ex:
     log.exception(ex)
