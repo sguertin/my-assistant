@@ -3,6 +3,7 @@ from logging import Logger
 from threading import Semaphore
 from typing import Optional
 
+from my_assistant.constants import LAST_ENTRY_FILE
 from my_assistant.interfaces.assistant import IAssistant
 from my_assistant.interfaces.issues import IIssueService
 from my_assistant.interfaces.log_factory import ILoggingFactory
@@ -16,14 +17,29 @@ from my_assistant.models.issues import Issue
 
 class Assistant(IAssistant):
     time_tracking: ITimeTrackingService
-    ui_provider: IUIFacadeService
+    ui_service: IUIFacadeService
     task_file_service: ITaskFileService
     issue_service: IIssueService
-    settings: Settings
+    settings_service: ISettingsService
     log: Logger
-    time_interval: timedelta
-    last_entry_time: time
-    lock: Semaphore
+    __lock__: Semaphore
+
+    @property
+    def time_interval(self) -> timedelta:
+        return timedelta(
+            hours=self.settings.interval_hours,
+            minutes=self.settings.interval_minutes,
+        )
+    
+    @property
+    def last_entry_time(self) -> time:
+        return self.task_file_service.get_last_entry_time(
+            datetime.now()
+        )
+        
+    @property
+    def settings(self) -> Settings:
+        return self.settings_service.get_settings()
 
     @property
     def issue_list(self) -> list[Issue]:
@@ -32,37 +48,27 @@ class Assistant(IAssistant):
     def __init__(
         self,
         time_tracking: ITimeTrackingService,
-        ui_provider: IUIFacadeService,
+        ui_service: IUIFacadeService,
         task_file_service: ITaskFileService,
         issue_service: IIssueService,
         logging_factory: ILoggingFactory,
         settings_service: ISettingsService,
     ):
         self.log = logging_factory.get_logger("Assistant")
-        self.settings = settings_service.get_settings()
+        self.settings_service = settings_service.get_settings()
         self.time_tracking = time_tracking
-        self.ui_provider = ui_provider
+        self.ui_service = ui_service
         self.task_file_service = task_file_service
         self.issue_service = issue_service
-        self.last_entry_time = self.task_file_service.get_last_entry_time(
-            datetime.now()
-        )
         self.time_interval = timedelta(
             hours=self.settings.interval_hours,
             minutes=self.settings.interval_minutes,
         )
-        self.ui_provider.set_theme(self.settings.theme)
-        self.lock = Semaphore()
+        self.ui_service.set_theme(self.settings.theme)
+        self.__lock__ = Semaphore()
 
+    
     def get_next(self, now: Optional[datetime] = None) -> datetime:
-        """Calculates the next time an entry should be recorded
-
-        Args:
-            now (datetime, optional): The time of day to calculate from. Defaults to None.
-
-        Returns:
-            datetime: The next time an entry will need to be taken
-        """
         if now is None:
             now = datetime.now()
         if self.last_entry_time:
@@ -128,41 +134,30 @@ class Assistant(IAssistant):
             and time_of_day.weekday() in self.settings.days_of_week
         )
 
-    def main_prompt(self, timestamp: datetime) -> datetime:
-        issue, comment = self.ui_provider.record_time(timestamp)
-        self.last_entry_time = timestamp.time()
+    def main_prompt(self, timestamp: datetime, manual_override: bool = False) -> datetime:
+        self.log.debug("self.assistant.__lock__.acquire()")               
+        self.__lock__.acquire()
+        issue, comment = self.ui_service.record_time(timestamp, manual_override)
         self.log.info("Recording entry for %s", issue)
         self.log.debug("Issue: %s Comment: %s", issue, comment)
-        if issue is not None:
-            try:
-                self.time_tracking.try_log_work(
-                    issue.issue_num, comment, self.time_interval
-                )
-            except Exception as ex:
-                self.log.exception(ex)
-                self.ui_provider.warning_prompt(
-                    f"An unexpected error occurred posting log to Jira: {ex}"
-                )
+        try:
+            if issue is not None:                
+                message =  f"{issue} - {comment}"                
+            else:
+                message = "No comment for this time block"                
             try:
                 self.task_file_service.create_tracking_entry(
-                    timestamp, f"{issue} - {comment}", self.time_interval
+                    timestamp, message, self.time_interval
                 )
             except Exception as ex:
                 self.log.exception(ex)
-                self.ui_provider.warning_prompt(
+                self.ui_service.warning_prompt(
                     f"An unexpected error occurred writing an entry to the log file: {ex}"
-                )
-        else:
-            try:
-                self.task_file_service.create_tracking_entry(
-                    timestamp, "No entry for this time block", self.time_interval
-                )
-            except Exception as ex:
-                self.log.exception(ex)
-                self.ui_provider.warning_prompt(
-                    f"An unexpected error occurred writing an entry to the log file: {ex}"
-                )
-        return self.get_next(timestamp)
+                )                        
+            return self.get_next(timestamp)
+        finally:
+            self.log.debug("self.assistant.__lock__.release()")
+            self.__lock__.release()
 
     def run(self):
         next_timestamp = self.get_next()
@@ -174,12 +169,8 @@ class Assistant(IAssistant):
             + next_timestamp.strftime("%H:%M")
         )
         if now >= next_timestamp:
-            if self.is_work_day(now) and self.is_work_hour(now):
-                self.log.debug("self.assistant.lock.acquire()")
-                self.lock.acquire()
-                self.main_prompt(next_timestamp)
-                self.log.debug("self.assistant.lock.release()")
-                self.lock.release()
+            if self.is_work_day(now) and self.is_work_hour(now):                
+                self.main_prompt(next_timestamp)                
                 # if Prompt is left open and more than one hour passes
                 # it will iterate through the hours that passed in between
                 while (

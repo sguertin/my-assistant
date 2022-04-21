@@ -6,9 +6,6 @@ from typing import Optional
 
 class IAssistant(metaclass=ABCMeta):
     """interface IAssistant - Assistant Service for handling decision making on time recording activities"""
-
-    lock: Semaphore
-
     @classmethod
     def __subclasshook__(cls, subclass):
         return (
@@ -63,11 +60,12 @@ class IAssistant(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def main_prompt(self, timestamp: datetime) -> datetime:
+    def main_prompt(self, timestamp: datetime, manual_override: bool = False) -> datetime:
         """Brings up the Time Entry Prompt for the timestamp provided
 
         Args:
             timestamp (datetime): the timestamp being recorded
+            manual_override (bool): indicates if this entry was called for manually
 
         Returns:
             datetime: the next time it will take a record
