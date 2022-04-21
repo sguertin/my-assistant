@@ -26,11 +26,6 @@ class SettingsService(ISettingsService):
             self.log.exception(ex)
 
     def get_settings(self) -> Settings:
-        if self.settings is None:
-            return self.load()
-        return deepcopy(self.settings)
-
-    def load(self) -> Settings:
         try:
             if not SETTINGS_FILE.exists():
                 self.log.info(
@@ -43,33 +38,40 @@ class SettingsService(ISettingsService):
                 return self.restore_defaults()
             if self.settings is None:
                 self.log.info("Loading settings for first time from %s", SETTINGS_FILE)
-                with open(SETTINGS_FILE, "r") as f:
-                    self.settings = Settings.from_json(f.read())
-                    self.last_modified = time.strftime(
-                        "%Y-%m-%d %H:%M:%S",
-                        time.localtime(os.path.getmtime(SETTINGS_FILE)),
-                    )
-            if self.last_modified is not None:
-                last_modified = time.strftime(
-                    "%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(SETTINGS_FILE))
+                return deepcopy(self.load())
+            last_modified = self.get_last_modified()
+            if last_modified != self.last_modified:
+                self.log.info(
+                    "File system has more recent version of settings, loading from %s",
+                    SETTINGS_FILE,
                 )
-                if last_modified != self.last_modified:
-                    self.log.info(
-                        "File system has more recent version of settings, loading from %s",
-                        SETTINGS_FILE,
-                    )
-                    with open(SETTINGS_FILE, "r") as f:
-                        self.settings = Settings.from_json(f.read())
-                        self.last_modified = last_modified
+                return deepcopy(self.load())
             return deepcopy(self.settings)
         except OSError as ex:
             self.log.exception(ex)
             raise
 
+    def load(self) -> Settings:
+        try:
+            with open(SETTINGS_FILE, "r") as f:
+                self.settings = Settings.from_json(f.read())
+                self.last_modified = self.get_last_modified()
+        except OSError as ex:
+            self.log.exception(ex)
+            raise
+        return self.settings
+
+    @staticmethod
+    def get_last_modified() -> str:
+        return time.strftime(
+            "%Y-%m-%d %H:%M:%S",
+            time.localtime(os.path.getmtime(SETTINGS_FILE)),
+        )
+    
     def restore_defaults(self) -> Settings:
-        self.settings = Settings()
-        self.save(self.settings)
-        return deepcopy(self.settings)
+        settings = Settings()
+        self.save(settings)
+        return deepcopy(settings)
 
     def save(self, settings: Settings) -> None:
         try:
@@ -77,6 +79,7 @@ class SettingsService(ISettingsService):
             with open(SETTINGS_FILE, "w+") as f:
                 f.write(settings.to_json(indent=4))
             self.settings = settings
+            self.last_modified = self.get_last_modified()
         except OSError as ex:
             self.log.exception(ex)
             raise
