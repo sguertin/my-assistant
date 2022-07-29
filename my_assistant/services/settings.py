@@ -6,8 +6,8 @@ import os.path
 
 from my_assistant.constants import HOUR_RANGE, MINUTE_RANGE, SETTINGS_FILE, WORKING_DIR
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.settings import ISettingsService
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.settings import ISettingsService
 from my_assistant.models.settings import Settings
 
 

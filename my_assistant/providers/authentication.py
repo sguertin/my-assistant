@@ -1,6 +1,6 @@
 import base64
 
-from my_assistant.interfaces.authentication import IAuthenticationProvider
+from my_assistant.providers.interfaces.authentication import IAuthenticationProvider
 
 
 class BasicAuthenticationProvider(IAuthenticationProvider):

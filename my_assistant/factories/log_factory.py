@@ -6,7 +6,7 @@ from logging import Logger, FileHandler
 from rich.logging import RichHandler
 
 from my_assistant.constants import LogLevel, WORKING_DIR
-from my_assistant.interfaces.log_factory import ILoggingFactory
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
 
 
 class LoggingFactory(ILoggingFactory):

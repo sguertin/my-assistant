@@ -1,11 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
-from my_assistant.interfaces.assistant import IAssistant
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.ui_launcher import IUILauncherService
-from my_assistant.interfaces.ui_facade import IUIFacadeService
+from my_assistant.services.interfaces.assistant import IAssistant
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.settings import ISettingsService
+from my_assistant.services.interfaces.ui_launcher import IUILauncherService
+from my_assistant.services.interfaces.ui_facade import IUIFacadeService
 from my_assistant.models.settings import Settings
 
 

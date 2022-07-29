@@ -2,10 +2,10 @@ from datetime import datetime
 from logging import Logger
 
 import PySimpleGUI as sg
-from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.ui_issues import IUIIssueService
-from my_assistant.interfaces.ui_time_tracking import IUITimeTrackingService
+from my_assistant.services.interfaces.issues import IIssueService
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.ui_issues import IUIIssueService
+from my_assistant.services.interfaces.ui_time_tracking import IUITimeTrackingService
 
 from my_assistant.models.issues import Issue
 

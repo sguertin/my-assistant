@@ -2,10 +2,10 @@ from logging import Logger
 from typing import Callable
 import PySimpleGUI as sg
 from my_assistant.exceptions.validation import ValidationError
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.ui_settings import IUISettingsService
-from my_assistant.interfaces.ui_warning import IUIWarningService
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.settings import ISettingsService
+from my_assistant.services.interfaces.ui_settings import IUISettingsService
+from my_assistant.services.interfaces.ui_warning import IUIWarningService
 from my_assistant.models.settings import Settings
 
 from my_assistant.constants import (

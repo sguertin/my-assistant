@@ -10,11 +10,11 @@ from my_assistant.constants import (
     JIRA_FAILED_AUTH,
     JIRA_SUCCESS_RESPONSE,
 )
-from my_assistant.interfaces.authentication import IAuthenticationProvider
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.time_tracking import ITimeTrackingService
-from my_assistant.interfaces.ui_facade import IUIFacadeService
+from my_assistant.providers.interfaces.authentication import IAuthenticationProvider
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.settings import ISettingsService
+from my_assistant.services.interfaces.time_tracking import ITimeTrackingService
+from my_assistant.services.interfaces.ui_facade import IUIFacadeService
 from my_assistant.models.issues import Issue
 from my_assistant.models.jira import JiraResponse
 from my_assistant.models.settings import Settings

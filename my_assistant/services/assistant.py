@@ -4,13 +4,13 @@ from threading import Semaphore
 from typing import Optional
 
 from my_assistant.constants import LAST_ENTRY_FILE
-from my_assistant.interfaces.assistant import IAssistant
-from my_assistant.interfaces.issues import IIssueService
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.settings import ISettingsService
-from my_assistant.interfaces.taskfile import ITaskFileService
-from my_assistant.interfaces.time_tracking import ITimeTrackingService
-from my_assistant.interfaces.ui_facade import IUIFacadeService
+from my_assistant.services.interfaces.assistant import IAssistant
+from my_assistant.services.interfaces.issues import IIssueService
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.settings import ISettingsService
+from my_assistant.services.interfaces.taskfile import ITaskFileService
+from my_assistant.services.interfaces.time_tracking import ITimeTrackingService
+from my_assistant.services.interfaces.ui_facade import IUIFacadeService
 from my_assistant.models.settings import Settings
 from my_assistant.models.issues import Issue
 
@@ -83,7 +83,7 @@ class Assistant(IAssistant):
                 + self.time_interval
             )
         else:
-            # No existing log file, assumes to start from the begining of the day
+            # No existing log file, assumes to start from the beginning of the day
             return (
                 datetime(
                     now.year,

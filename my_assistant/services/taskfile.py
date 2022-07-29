@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Optional
 
 from my_assistant.constants import WORKING_DIR
-from my_assistant.interfaces.log_factory import ILoggingFactory
-from my_assistant.interfaces.taskfile import ITaskFileService
+from my_assistant.factories.interfaces.log_factory import ILoggingFactory
+from my_assistant.services.interfaces.taskfile import ITaskFileService
 from my_assistant.models.taskfile import TimeDayLog, TimeEntry
 
 
