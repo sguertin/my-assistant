@@ -6,7 +6,7 @@ from dataclasses_json import DataClassJsonMixin
 from my_assistant.constants import LogLevel
 
 
-@dataclass
+@dataclass(slots=True)
 class Settings(DataClassJsonMixin):
     theme: str = "DarkBlue3"
     base_url: str = ""

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from dataclasses_json import DataClassJsonMixin
 
 
-@dataclass
+@dataclass(slots=True)
 class Issue(DataClassJsonMixin):
     issue_num: str
     description: str

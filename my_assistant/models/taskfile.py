@@ -4,7 +4,7 @@ from datetime import datetime, time
 from dataclasses_json import DataClassJsonMixin
 
 
-@dataclass
+@dataclass(slots=True)
 class TimeEntry(DataClassJsonMixin):
     start: datetime
     end: datetime
@@ -16,7 +16,7 @@ class TimeEntry(DataClassJsonMixin):
         self.entry = entry
 
 
-@dataclass
+@dataclass(slots=True)
 class TimeDayLog(DataClassJsonMixin):
     log_date: datetime
     file_name: str
