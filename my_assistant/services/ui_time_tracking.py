@@ -50,6 +50,8 @@ class UITimeTrackingService(IUITimeTrackingService):
                 window.close()
                 return None, None
             elif event == "ManageIssues":
-                self.ui_issue_service.manage_issues(combo)
+                save, issues = self.ui_issue_service.manage_issues()
+                if save:
+                    combo.update(entries=issues)                
 
             window.refresh()

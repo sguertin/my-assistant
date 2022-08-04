@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta, time
 from logging import Logger
-from threading import Semaphore
 from typing import Optional
 
-from my_assistant.constants import LAST_ENTRY_FILE
 from my_assistant.services.interfaces.assistant import IAssistant
 from my_assistant.services.interfaces.issues import IIssueService
 from my_assistant.factories.interfaces.log_factory import ILoggingFactory
@@ -22,7 +20,6 @@ class Assistant(IAssistant):
     issue_service: IIssueService
     settings_service: ISettingsService
     log: Logger
-    __lock__: Semaphore
 
     @property
     def time_interval(self) -> timedelta:
@@ -45,6 +42,13 @@ class Assistant(IAssistant):
     def issue_list(self) -> list[Issue]:
         return self.issue_service.get_issues_list()
 
+    @property
+    def time_interval(self) -> timedelta:
+        return timedelta(
+            hours=self.settings.interval_hours,
+            minutes=self.settings.interval_minutes,
+        )
+    
     def __init__(
         self,
         time_tracking: ITimeTrackingService,
@@ -55,18 +59,12 @@ class Assistant(IAssistant):
         settings_service: ISettingsService,
     ):
         self.log = logging_factory.get_logger("Assistant")
-        self.settings_service = settings_service.get_settings()
+        self.settings_service = settings_service
         self.time_tracking = time_tracking
         self.ui_service = ui_service
         self.task_file_service = task_file_service
-        self.issue_service = issue_service
-        self.time_interval = timedelta(
-            hours=self.settings.interval_hours,
-            minutes=self.settings.interval_minutes,
-        )
+        self.issue_service = issue_service        
         self.ui_service.set_theme(self.settings.theme)
-        self.__lock__ = Semaphore()
-
     
     def get_next(self, now: Optional[datetime] = None) -> datetime:
         if now is None:
@@ -135,29 +133,24 @@ class Assistant(IAssistant):
         )
 
     def main_prompt(self, timestamp: datetime, manual_override: bool = False) -> datetime:
-        self.log.debug("self.assistant.__lock__.acquire()")               
-        self.__lock__.acquire()
         issue, comment = self.ui_service.record_time(timestamp, manual_override)
         self.log.info("Recording entry for %s", issue)
-        self.log.debug("Issue: %s Comment: %s", issue, comment)
+        self.log.debug("Issue: %s Comment: %s", issue, comment)        
+        if issue is not None:                
+            message =  f"{issue} - {comment}"                
+        else:
+            message = "No comment for this time block"                
         try:
-            if issue is not None:                
-                message =  f"{issue} - {comment}"                
-            else:
-                message = "No comment for this time block"                
-            try:
-                self.task_file_service.create_tracking_entry(
-                    timestamp, message, self.time_interval
-                )
-            except Exception as ex:
-                self.log.exception(ex)
-                self.ui_service.warning_prompt(
-                    f"An unexpected error occurred writing an entry to the log file: {ex}"
-                )                        
-            return self.get_next(timestamp)
-        finally:
-            self.log.debug("self.assistant.__lock__.release()")
-            self.__lock__.release()
+            self.task_file_service.create_tracking_entry(
+                timestamp, message, self.time_interval
+            )
+        except Exception as ex:
+            self.log.exception(ex)
+            self.ui_service.warning_prompt(
+                f"An unexpected error occurred writing an entry to the log file: {ex}"
+            )                        
+        return self.get_next(timestamp)
+        
 
     def run(self):
         next_timestamp = self.get_next()
