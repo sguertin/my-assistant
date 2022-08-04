@@ -27,7 +27,7 @@ class UIIssueService(IUIIssueService):
     def get_issue_info(self, issues: list[Issue]) -> list[Issue]:
         issue_field = sg.In(key="-ISSUE-")
         desc_field = sg.In(key="-DESCRIPTION-")
-        result_field = sg.T(
+        result_field: sg.Text = sg.T(
             f"Issue PRODSUP-00000000 was successfully added", visible=False
         )
         window = sg.Window(
@@ -49,6 +49,9 @@ class UIIssueService(IUIIssueService):
         while True:
             event, values = window.read()
             self.log.info("Event %s received", event)
+            result_field.update(
+                f"", visible=False
+            )
             if event in ("Another", "Save") and values:
                 issue_num, description = values["-ISSUE-"], values["-DESCRIPTION-"]
                 if issue_num:
