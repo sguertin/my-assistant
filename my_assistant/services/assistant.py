@@ -23,10 +23,6 @@ class Assistant(IAssistant):
     time_interval: timedelta
     last_entry_time: time
 
-    @property
-    def issue_list(self) -> list[Issue]:
-        return self.issue_service.get_issues_list()
-
     def __init__(
         self,
         time_tracking: ITimeTrackingService,
@@ -86,7 +82,6 @@ class Assistant(IAssistant):
                 + self.time_interval
             )
 
-    @staticmethod
     def is_work_day(date: datetime) -> bool:
         return date.weekday() < 5
 
