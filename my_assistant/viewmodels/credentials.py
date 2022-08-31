@@ -9,7 +9,9 @@ class CredentialKeys(StringEnum):
 
 
 class CredentialsViewModel(ViewModel):
-    def load(self, result_set) -> Credentials:
-        return Credentials(
+    credentials: Credentials
+    def load(self, result_set) -> "CredentialsViewModel":
+        self.credentials = Credentials(
             result_set[CredentialKeys.USERNAME], result_set[CredentialKeys.PASSWORD]
         )
+        return self
