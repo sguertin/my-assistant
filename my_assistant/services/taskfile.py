@@ -54,5 +54,5 @@ class TaskFileService(ITaskFileService):
     def get_last_entry_time(self, timestamp: datetime) -> Optional[time]:
         task_log = self.get_time_log(timestamp)
         if len(task_log.time_entries) > 0:
-            return task_log.time_entries[-1].end_time
+            return task_log.time_entries[-1].end
         return None

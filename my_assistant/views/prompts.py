@@ -4,35 +4,41 @@ from my_assistant.models.events import Events
 from my_assistant.views.view import View
 
 
-class OkCancelPrompt(View):
+class PromptView(View):
+    def read(self, close: bool = True) -> str:
+        event, _ = self.view.read(close=close)
+        return event
+
+
+class OkCancelPrompt(PromptView):
     view: sg.Window
 
     def __init__(self, msg: str):
         self.view = sg.Window(
             f"Time Tracking - WARNING",
-            [[sg.T(msg)], [sg.Button(Events.OK, bind_return_key=True), sg.Cancel()]],
+            [[sg.Text(msg)], [sg.Button(Events.OK, bind_return_key=True), sg.Cancel()]],
         )
 
 
-class WarningPrompt(View):
+class WarningPrompt(PromptView):
     view: sg.Window
 
     def __init__(self, msg: str):
         self.view = sg.Window(
             f"Time Tracking - WARNING",
-            [[sg.T(msg)], [sg.Button(Events.CLOSE, bind_return_key=True)]],
+            [[sg.Text(msg)], [sg.Button(Events.CLOSE, bind_return_key=True)]],
         )
 
 
-class RetryPrompt(View):
+class RetryPrompt(PromptView):
     view: sg.Window
 
     def __init__(self, msg):
         self.view = sg.Window(
             f"Time Tracking - WARNING",
             [
-                [sg.T(msg)],
-                [sg.T("Do you want to retry?")],
+                [sg.Text(msg)],
+                [sg.Text("Do you want to retry?")],
                 [sg.Button(Events.RETRY, bind_return_key=True), sg.Cancel()],
             ],
         )

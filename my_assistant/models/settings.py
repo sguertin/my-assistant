@@ -1,18 +1,12 @@
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
-from os import mkdir
-from dataclasses_json import DataClassJsonMixin, LetterCase
 
-from my_assistant.constants import (
-    HOUR_RANGE,
-    MINUTE_RANGE,
-    SETTINGS_FILE,
-    WORKING_DIR,
-    LogLevel,
-)
+from dataclasses_json import DataClassJsonMixin
+
+from my_assistant.constants import LogLevel
 
 
-@dataclass
+@dataclass(slots=True)
 class Settings(DataClassJsonMixin):
     theme: str = "DarkBlue3"
     base_url: str = ""

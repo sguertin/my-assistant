@@ -1,15 +1,14 @@
-from enum import Enum
+from my_assistant.enum import StringEnum
 
 
-class Events(Enum):
+class Events(StringEnum):
     ANOTHER = "Another"
     CANCEL = "Cancel"
     CLOSE = "Close"
     CONTINUE = "Continue"
+    NO = "No"
     OK = "Ok"
     RETRY = "Retry"
     SAVE = "Save"
     SUBMIT = "Submit"
-
-    def __repr__(self):
-        return str(self)
+    YES = "Yes"
