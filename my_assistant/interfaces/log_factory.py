@@ -30,7 +30,7 @@ class ILoggingFactory(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def update_level(self, log_level: LogLevel):
+    def update_level(self, log_level: LogLevel) -> None:
         """Updates the default log level for the factory
 
         Args:

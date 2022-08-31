@@ -18,7 +18,7 @@ class IAssistant(metaclass=ABCMeta):
             or NotImplemented
         )
 
-    @abstractstaticmethod
+    @abstractmethod
     def is_work_day(date: datetime) -> bool:
         """Checks if the date provided is a workday
 
